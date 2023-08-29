@@ -1,4 +1,10 @@
-<mat-toolbar color="primary"><span>Federated Catalog Viewer</span></mat-toolbar>
+<mat-toolbar color="primary">
+    <span>Federated Catalog Viewer</span>
+    <nav style="margin-left: 16px">
+        <a routerLink="" mat-button>Browse Catalog</a>
+        <a routerLink="query" mat-button> Query Tool</a>
+    </nav>
+</mat-toolbar>
 
 <div style="margin: 16px">
     <router-outlet></router-outlet>

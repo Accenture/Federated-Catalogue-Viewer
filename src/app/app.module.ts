@@ -13,9 +13,24 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CatalogBrowserComponent } from './components/catalog-browser/catalog-browser.component';
+import { NodeTableComponent } from './components/node-table/node-table.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { NodeDetailsComponent } from './components/node-details/node-details.component';
+import { MatListModule } from '@angular/material/list';
+import { NodeLabelsComponent } from './components/node-labels/node-labels.component';
 
 @NgModule({
-    declarations: [AppComponent, QueryComponent, JsonStringifyPipe],
+    declarations: [
+        AppComponent,
+        QueryComponent,
+        JsonStringifyPipe,
+        CatalogBrowserComponent,
+        NodeTableComponent,
+        NodeDetailsComponent,
+        NodeLabelsComponent,
+    ],
     imports: [
         BrowserModule,
         AppRoutingModule,
@@ -27,6 +42,9 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatInputModule,
         MatButtonModule,
         ReactiveFormsModule,
+        MatTabsModule,
+        MatChipsModule,
+        MatListModule,
     ],
     providers: [],
     bootstrap: [AppComponent],
