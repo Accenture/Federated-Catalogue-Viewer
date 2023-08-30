@@ -1,48 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
-
-interface QueryResponse {
-    totalCount: number;
-    items: Array<Object>;
-}
+import { QueryService } from '../../services/query.service';
+import { EMPTY_RESULTS, QueryResponse } from '../../types/dtos';
+import { query } from '@angular/animations';
 
 const DEFAULT_QUERY: string = 'Match (n)-[r]->(m)\nReturn n,r,m';
-
-const EMPTY_RESULTS: QueryResponse = {
-    items: [],
-    totalCount: 0,
-};
-
 @Component({
     selector: 'app-query',
     templateUrl: './query.component.html',
     styleUrls: ['./query.component.scss'],
 })
 export class QueryComponent implements OnInit {
-    data: QueryResponse = EMPTY_RESULTS;
+    data: QueryResponse<any> = EMPTY_RESULTS;
     error: HttpErrorResponse | null = null;
 
     queryFormGroup = this._formBuilder.group({
         query: [DEFAULT_QUERY, Validators.required],
     });
-    constructor(private _httpClient: HttpClient, private _formBuilder: FormBuilder) {}
+    constructor(private _queryService: QueryService, private _formBuilder: FormBuilder) {}
 
     ngOnInit(): void {
         this.queryData();
     }
-
-    queryData() {
-        const body = {
-            statement: this.queryFormGroup.value.query,
-        };
-        this._httpClient.post<QueryResponse>('https://fc.gaiax4roms.hotsprings.io/query', body).subscribe(
-            (value) => {
+    public queryData() {
+        if (!this.queryFormGroup.value.query) {
+            return;
+        }
+        this._queryService.queryData(this.queryFormGroup.value.query).subscribe({
+            next: (value) => {
                 this.data = value;
                 this.error = null;
             },
-            (error: HttpErrorResponse) => (this.error = error),
-        );
+            error: (error: HttpErrorResponse) => (this.error = error),
+        });
     }
 
     getCols(): Array<string> {

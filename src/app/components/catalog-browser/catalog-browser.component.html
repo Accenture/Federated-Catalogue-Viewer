@@ -1,0 +1,12 @@
+<mat-card *ngIf="data">
+    <mat-card-header>
+        <mat-card-title *ngIf="label && (label | async); else noLabel">{{
+            '"' + (label | async) + '" Entries'
+        }}</mat-card-title>
+        <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
+        <mat-card-subtitle>Total: {{ data.totalCount }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <app-node-table [nodes]="data.items"></app-node-table>
+    </mat-card-content>
+</mat-card>

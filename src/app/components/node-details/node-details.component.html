@@ -1,0 +1,25 @@
+<ng-container *ngIf="value | async as node">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title> #{{ node.id }} </mat-card-title>
+            <mat-card-subtitle>
+                <app-node-labels [labels]="node.labels"></app-node-labels>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-list>
+            <mat-list-item *ngFor="let key of getKeys(node.value)">
+                <span matListItemTitle>{{ getValue(node.value, key) }}</span>
+                <span matListItemLine>{{ key }}</span>
+            </mat-list-item>
+        </mat-list>
+    </mat-card>
+    <mat-card style="margin-top: 16px" *ngIf="childEntries | async as entries">
+        <mat-card-header>
+            <mat-card-title>Related to</mat-card-title>
+            <mat-card-subtitle>Total: {{ entries.totalCount }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <app-node-table [nodes]="entries.items" *ngIf="entries.items.length > 0"></app-node-table>
+        </mat-card-content>
+    </mat-card>
+</ng-container>
