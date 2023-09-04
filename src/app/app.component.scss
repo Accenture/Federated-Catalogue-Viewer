@@ -1,0 +1,64 @@
+.app-toolbar {
+    .app-spacer {
+        flex: 1 1 auto;
+    }
+    background: #fff;
+    img {
+        height: 32px;
+        margin-left: 32px;
+    }
+    .app-name,
+    nav {
+        height: 64px;
+        line-height: 64px;
+        margin-top: 16px;
+    }
+    .app-name {
+        margin-left: 16px;
+        padding-left: 16px;
+        height: 48px;
+        margin-top: 2px;
+
+        font-size: 1rem;
+        border-left: #e6e6dc 2px solid;
+    }
+    nav {
+        display: flex;
+        flex-direction: row;
+        margin-right: 26px;
+        a {
+            font-size: 1rem;
+            display: block;
+            height: 64px;
+            line-height: 64px;
+            margin: 0 8px;
+            text-decoration: none;
+            color: #000000;
+            padding: 0 16px;
+            &:hover,
+            &:active,
+            &.active {
+                border-bottom: #a100ff solid 4px;
+            }
+        }
+    }
+}
+.app-content {
+    margin: 32px;
+}
+
+:host ::ng-deep .mat-mdc-card-title {
+    font-weight: 900;
+    font-size: 2.5rem;
+    font-family: graphik-black, 'Helvetica Neue', sans-serif;
+    margin-bottom: 16px;
+}
+
+:host ::ng-deep .mat-mdc-card {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+:host ::ng-deep .mdc-button {
+    border-radius: 0;
+}
