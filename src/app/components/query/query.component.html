@@ -9,10 +9,8 @@
                 <mat-label>Cypher Query Statement</mat-label>
                 <textarea matInput formControlName="query" style="font-family: monospace"></textarea>
             </mat-form-field>
+            <button mat-flat-button color="primary" type="submit">Execute Query</button>
         </mat-card-content>
-        <mat-card-actions>
-            <button mat-button type="submit">Query</button>
-        </mat-card-actions>
     </form>
 </mat-card>
 <mat-card *ngIf="error != null; else noError" style="margin-top: 16px">

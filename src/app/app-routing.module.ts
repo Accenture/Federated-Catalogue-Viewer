@@ -5,10 +5,10 @@ import { CatalogBrowserComponent } from './components/catalog-browser/catalog-br
 import { NodeDetailsComponent } from './components/node-details/node-details.component';
 
 const routes: Routes = [
-    { path: '', component: CatalogBrowserComponent },
     { path: 'nodes', component: CatalogBrowserComponent },
     { path: 'query', component: QueryComponent },
     { path: 'nodes/:id', component: NodeDetailsComponent },
+    { path: '', redirectTo: 'nodes', pathMatch: 'full' },
 ];
 
 @NgModule({

@@ -1,11 +1,13 @@
-<mat-toolbar color="primary">
-    <span>Federated Catalog Viewer</span>
-    <nav style="margin-left: 16px">
-        <a routerLink="" mat-button>Browse Catalog</a>
-        <a routerLink="query" mat-button> Query Tool</a>
+<mat-toolbar [className]="'app-toolbar'">
+    <img src="assets/Acc_Logo_Black_Purple_RGB.png" />
+    <span class="app-name">XFSC Federated Catalog Viewer</span>
+    <span class="app-spacer"></span>
+    <nav>
+        <a routerLink="" [className]="getActiveClass('/nodes')">Browse Catalog</a>
+        <a routerLink="query" [className]="getActiveClass('/query')"> Query Tool</a>
     </nav>
 </mat-toolbar>
 
-<div style="margin: 16px">
+<div class="app-content">
     <router-outlet></router-outlet>
 </div>
