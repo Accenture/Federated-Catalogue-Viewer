@@ -1,7 +1,7 @@
 FROM node:18 as build-deps
 
 RUN corepack enable
-RUN corepack prepare yarn@stable --activate
+RUN corepack prepare yarn@3.8.1 --activate
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock .yarnrc.yml ./
