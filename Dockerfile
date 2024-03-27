@@ -10,6 +10,6 @@ RUN yarn install
 COPY . ./
 RUN yarn build
 
-FROM bitnami/nginx:1.22.1
+FROM bitnami/nginx:1.25.4
 COPY default.conf /opt/bitnami/nginx/conf/server_blocks/my_server_block.conf
 COPY --from=build-deps /usr/src/app/dist/federated-catalog-viewer-ui /app
