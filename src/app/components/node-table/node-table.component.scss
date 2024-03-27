@@ -1,0 +1,23 @@
+table {
+    table-layout: fixed;
+    width: 100%;
+
+    .mat-column-id {
+        width: 60px;
+    }
+
+    .mat-column-labels {
+        width: 20%;
+    }
+
+    .mat-column-value {
+        pre {
+            overflow-x: auto;
+        }
+    }
+
+    .mat-column-actions {
+        width: 100px;
+        text-align: right;
+    }
+}
