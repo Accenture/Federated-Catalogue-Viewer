@@ -10,6 +10,8 @@ RUN yarn install
 COPY . ./
 RUN yarn build
 
-FROM bitnami/nginx:1.25.4
-COPY default.conf /opt/bitnami/nginx/conf/server_blocks/my_server_block.conf
+FROM bitnami/openresty:1.25.3-1
+RUN mv /opt/bitnami/openresty/nginx/conf/nginx.conf /opt/bitnami/openresty/nginx/conf/original-nginx.conf
+COPY nginx.conf /opt/bitnami/openresty/nginx/conf/
+COPY nginx-server-block.conf /opt/bitnami/openresty/nginx/conf/server_blocks/
 COPY --from=build-deps /usr/src/app/dist/federated-catalog-viewer-ui /app

@@ -3,11 +3,20 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { filter, map, Observable } from 'rxjs';
 import { NodeQueryResult, QueryResponse } from '../types/dtos';
 
+declare global {
+    interface Window {
+        ENVIRONMENT?: Record<string, string>;
+    }
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class QueryService {
+    public readonly fcQueryUrl: string;
+
     constructor(private _httpClient: HttpClient) {
+        this.fcQueryUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
         this.queryData = this.queryData.bind(this);
         this.allNodes = this.allNodes.bind(this);
         this.getById = this.getById.bind(this);
@@ -20,11 +29,7 @@ export class QueryService {
             parameters,
         };
         const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-        return this._httpClient.post<QueryResponse<T>>(
-            'https://fc.gaiax4roms.hotsprings.io/query',
-            JSON.stringify(body),
-            { headers },
-        );
+        return this._httpClient.post<QueryResponse<T>>(`${this.fcQueryUrl}`, JSON.stringify(body), { headers });
     }
 
     public allNodes(label = 'Resource'): Observable<QueryResponse<NodeQueryResult>> {
