@@ -58,10 +58,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "federated-catalog-viewer-ui:build:production"
+                            "buildTarget": "federated-catalog-viewer-ui:build:production"
                         },
                         "development": {
-                            "browserTarget": "federated-catalog-viewer-ui:build:development"
+                            "buildTarget": "federated-catalog-viewer-ui:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -69,7 +69,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "federated-catalog-viewer-ui:build"
+                        "buildTarget": "federated-catalog-viewer-ui:build"
                     }
                 },
                 "test": {
@@ -85,5 +85,8 @@
                 }
             }
         }
+    },
+    "cli": {
+        "analytics": false
     }
 }
