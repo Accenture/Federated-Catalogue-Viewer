@@ -1,14 +1,11 @@
 FROM node:18 as build-deps
 
-RUN corepack enable
-RUN corepack prepare yarn@3.8.1 --activate
-
 WORKDIR /usr/src/app
-COPY package.json yarn.lock .yarnrc.yml ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm install
 
 COPY . ./
-RUN yarn build
+RUN npm run build
 
 FROM bitnami/openresty:1.25.3-1
 RUN mv /opt/bitnami/openresty/nginx/conf/nginx.conf /opt/bitnami/openresty/nginx/conf/original-nginx.conf
