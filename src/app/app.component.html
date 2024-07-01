@@ -5,9 +5,20 @@
     <nav>
         <a routerLink="" [className]="getActiveClass('/nodes')">Browse Catalog</a>
         <a routerLink="query" [className]="getActiveClass('/query')"> Query Tool</a>
+        <ng-container *ngIf="isLoggedIn()">
+            <button id="user-menu" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="User: {{ username }}">
+                <mat-icon>account_circle</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="logout()">Logout</button>
+            </mat-menu>
+        </ng-container>
     </nav>
 </mat-toolbar>
 
 <div class="app-content">
-    <router-outlet></router-outlet>
+    <app-authentication></app-authentication>
+    <ng-container *ngIf="isLoggedIn()">
+        <router-outlet></router-outlet>
+    </ng-container>
 </div>
