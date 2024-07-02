@@ -13,6 +13,9 @@ declare global {
 })
 export class AuthService {
     public readonly fcKeycloakAuthUrl: string;
+    public readonly fcKeycloakClientScope: string;
+    public readonly fcKeycloakClientId: string;
+    public readonly fcKeycloakClientSecret: string;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
     username$: Observable<string | null> = this.usernameSubject.asObservable();
     accessToken: string = '';
@@ -24,6 +27,9 @@ export class AuthService {
         this.fcKeycloakAuthUrl =
             window.ENVIRONMENT?.['FC_KEYCLOAK_AUTH_URL'] ||
             'https://keycloak.gaiax4roms.hotsprings.io/realms/gaiax4roms/protocol/openid-connect/token';
+        this.fcKeycloakClientScope = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SCOPE'] || 'gaia-x';
+        this.fcKeycloakClientId = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_ID'] || 'federated-catalogue';
+        this.fcKeycloakClientSecret = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SECRET'] || 'keycloak-secret';
         const storedUsername = localStorage.getItem('username');
         const storedToken = localStorage.getItem('accessToken');
         const storedRefreshToken = localStorage.getItem('refreshToken');
@@ -52,10 +58,10 @@ export class AuthService {
     login(username: string, password: string): Observable<any> {
         this.usernameSubject.next(username);
         const body = new URLSearchParams();
-        body.set('scope', 'gaia-x');
+        body.set('scope', this.fcKeycloakClientScope);
         body.set('grant_type', 'password');
-        body.set('client_id', 'federated-catalogue');
-        body.set('client_secret', 'keycloak-secret');
+        body.set('client_id', this.fcKeycloakClientId);
+        body.set('client_secret', this.fcKeycloakClientSecret);
         body.set('username', username);
         body.set('password', password);
 
