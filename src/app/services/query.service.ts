@@ -23,7 +23,7 @@ export class QueryService {
         this.getRelatedNodes = this.getRelatedNodes.bind(this);
     }
 
-    public queryData<T>(statement: string, parameters: Object = {}): Observable<QueryResponse<T>> {
+    public queryData<T>(statement: string, parameters: object = {}): Observable<QueryResponse<T>> {
         const body = {
             statement: statement,
             parameters,

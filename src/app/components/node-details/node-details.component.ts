@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { QueryService } from '../../services/query.service';
 import { NodeQueryResult, QueryResponse } from '../../types/dtos';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-node-details',
@@ -24,11 +24,11 @@ export class NodeDetailsComponent implements OnInit {
         this.childEntries = idObservable.pipe(switchMap(this._queryService.getRelatedNodes));
     }
 
-    getKeys(value: any): Array<string> {
+    getKeys(value: Record<string, unknown>): string[] {
         return Object.keys(value);
     }
 
-    getValue(value: any, key: string): any {
-        return value.hasOwnProperty(key) ? value[key] : '-';
+    getValue(value: Record<string, unknown>, key: string): unknown {
+        return Object.prototype.hasOwnProperty.call(value, key) ? value[key] : '-';
     }
 }

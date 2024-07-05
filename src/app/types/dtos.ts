@@ -1,15 +1,15 @@
 export interface QueryResponse<T> {
     totalCount: number;
-    items: Array<T>;
+    items: T[];
 }
 
 export interface NodeQueryResult {
     id: number;
-    value: object;
-    labels: Array<string>;
+    value: Record<string, unknown>;
+    labels: string[];
 }
 
-export const EMPTY_RESULTS: QueryResponse<any> = {
+export const EMPTY_RESULTS: QueryResponse<NodeQueryResult> = {
     items: [],
     totalCount: 0,
 };

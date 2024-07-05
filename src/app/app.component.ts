@@ -10,8 +10,7 @@ export class AppComponent {
     protected readonly toolbar = toolbar;
 
     constructor(private router: Router) {}
-    getActiveClass(urlPrefix: string): Array<string> {
-        console.log(this.router.url);
+    getActiveClass(urlPrefix: string): string[] {
         if (this.router.url.startsWith(urlPrefix)) {
             return ['active'];
         }

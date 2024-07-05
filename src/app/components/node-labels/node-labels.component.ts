@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
     styleUrls: ['./node-labels.component.scss'],
 })
 export class NodeLabelsComponent {
-    @Input() labels: Array<string> = [];
+    @Input() labels: string[] = [];
 }
