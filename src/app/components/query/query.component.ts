@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { QueryService } from '../../services/query.service';
-import { EMPTY_RESULTS, QueryResponse } from '../../types/dtos';
+import { EMPTY_RESULTS, NodeQueryResult, QueryResponse } from '../../types/dtos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, map, tap } from 'rxjs';
 
-const DEFAULT_QUERY: string = 'Match (n)-[r]->(m)\nReturn n,r,m';
+const DEFAULT_QUERY = 'Match (n)-[r]->(m)\nReturn n,r,m';
 @Component({
     selector: 'app-query',
     templateUrl: './query.component.html',
     styleUrls: ['./query.component.scss'],
 })
 export class QueryComponent implements OnInit {
-    data: QueryResponse<any> = EMPTY_RESULTS;
+    data: QueryResponse<NodeQueryResult> = EMPTY_RESULTS;
     error: HttpErrorResponse | null = null;
 
     queryFormGroup = this._formBuilder.group({
@@ -31,7 +31,7 @@ export class QueryComponent implements OnInit {
             .pipe(
                 map((params) => params['query'] ?? DEFAULT_QUERY),
                 tap((q) => this.queryFormGroup.controls.query.setValue(q)),
-                concatMap((q) => this._queryService.queryData(q)),
+                concatMap((q) => this._queryService.queryData<NodeQueryResult>(q)),
             )
             .subscribe({
                 next: (value) => {
@@ -54,7 +54,7 @@ export class QueryComponent implements OnInit {
         });
     }
 
-    getCols(): Array<string> {
+    getCols(): string[] {
         if (this.data.items.length > 0) {
             return Object.keys(this.data.items[0]);
         }

@@ -7,7 +7,7 @@ import { NodeQueryResult } from '../../types/dtos';
     styleUrls: ['./node-table.component.scss'],
 })
 export class NodeTableComponent {
-    @Input() nodes: Array<NodeQueryResult> = [];
+    @Input() nodes: NodeQueryResult[] = [];
 
     displayCols = ['id', 'labels', 'value', 'actions'];
 }
