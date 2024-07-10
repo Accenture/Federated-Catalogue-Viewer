@@ -13,7 +13,7 @@
         </mat-card-content>
     </form>
 </mat-card>
-<mat-card *ngIf="error != null; else noError" style="margin-top: 16px">
+<mat-card *ngIf="!error; else noError" style="margin-top: 16px">
     <mat-card-header>
         <mat-card-title>Query Error</mat-card-title>
     </mat-card-header>
