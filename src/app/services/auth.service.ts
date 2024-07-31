@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, catchError, of, tap } from 'rxjs';
 
 declare global {
     interface Window {
         ENVIRONMENT?: Record<string, string>;
     }
+}
+
+export interface TokenResponse {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
 }
 
 @Injectable({
@@ -18,10 +24,10 @@ export class AuthService {
     public readonly fcKeycloakClientSecret: string;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
     username$: Observable<string | null> = this.usernameSubject.asObservable();
-    accessToken: string = '';
-    refreshToken: string = '';
-    expiresIn: number = 0;
-    tokenExpirationTimer: any;
+    accessToken = '';
+    refreshToken = '';
+    expiresIn = 0;
+    tokenExpirationTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private http: HttpClient) {
         this.fcKeycloakAuthUrl =
@@ -55,7 +61,7 @@ export class AuthService {
         return !!this.accessToken;
     }
 
-    login(username: string, password: string): Observable<any> {
+    login(username: string, password: string): Observable<TokenResponse> {
         this.usernameSubject.next(username);
         const body = new URLSearchParams();
         body.set('scope', this.fcKeycloakClientScope);
@@ -69,10 +75,10 @@ export class AuthService {
             'Content-Type': 'application/x-www-form-urlencoded',
         });
 
-        return this.http.post(this.fcKeycloakAuthUrl, body.toString(), { headers });
+        return this.http.post<TokenResponse>(this.fcKeycloakAuthUrl, body.toString(), { headers });
     }
 
-    handleTokenResponse(response: any): void {
+    handleTokenResponse(response: TokenResponse): void {
         this.accessToken = response.access_token;
         this.refreshToken = response.refresh_token;
         this.expiresIn = response.expires_in;
@@ -85,7 +91,9 @@ export class AuthService {
     }
 
     startTokenExpirationTimer(): void {
-        clearInterval(this.tokenExpirationTimer);
+        if (this.tokenExpirationTimer !== null) {
+            clearTimeout(this.tokenExpirationTimer);
+        }
 
         this.tokenExpirationTimer = setTimeout(() => {
             this.refreshAccessToken();
@@ -95,8 +103,8 @@ export class AuthService {
     refreshAccessToken(): void {
         const body = new URLSearchParams();
         body.set('grant_type', 'refresh_token');
-        body.set('client_id', 'federated-catalogue');
-        body.set('client_secret', 'keycloak-secret');
+        body.set('client_id', this.fcKeycloakClientId);
+        body.set('client_secret', this.fcKeycloakClientSecret);
         body.set('refresh_token', this.refreshToken);
 
         const headers = new HttpHeaders({
@@ -104,10 +112,10 @@ export class AuthService {
         });
 
         this.http
-            .post(this.fcKeycloakAuthUrl, body.toString(), { headers })
+            .post<TokenResponse>(this.fcKeycloakAuthUrl, body.toString(), { headers })
             .pipe(
-                tap((response: any) => this.handleTokenResponse(response)),
-                catchError((error) => {
+                tap((response: TokenResponse) => this.handleTokenResponse(response)),
+                catchError((error: HttpErrorResponse) => {
                     console.error('Failed to refresh token', error);
                     this.logout();
                     return of(null);
@@ -124,7 +132,9 @@ export class AuthService {
         this.accessToken = '';
         this.refreshToken = '';
         this.expiresIn = 0;
-        clearInterval(this.tokenExpirationTimer);
+        if (this.tokenExpirationTimer !== null) {
+            clearTimeout(this.tokenExpirationTimer);
+        }
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('tokenExpiresIn');
