@@ -54,6 +54,16 @@ export class AuthService {
             } else {
                 this.refreshAccessToken();
             }
+        } else {
+            // Log in per env variables for demo purposes
+            const demoUsername = window.ENVIRONMENT?.['DEMO_USERNAME'];
+            const demoPassword = window.ENVIRONMENT?.['DEMO_PASSWORD'];
+
+            if (demoUsername && demoPassword) {
+                this.login(demoUsername, demoPassword).subscribe((response) => {
+                    this.handleTokenResponse(response);
+                });
+            }
         }
     }
 
