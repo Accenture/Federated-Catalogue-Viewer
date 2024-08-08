@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { filter, map, Observable } from 'rxjs';
 import { NodeQueryResult, QueryResponse } from '../types/dtos';
+import { AuthService } from '../services/auth.service';
 
 declare global {
     interface Window {
@@ -15,7 +16,7 @@ declare global {
 export class QueryService {
     public readonly fcQueryUrl: string;
 
-    constructor(private _httpClient: HttpClient) {
+    constructor(private _httpClient: HttpClient, private auth: AuthService) {
         this.fcQueryUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
         this.queryData = this.queryData.bind(this);
         this.allNodes = this.allNodes.bind(this);
@@ -23,12 +24,20 @@ export class QueryService {
         this.getRelatedNodes = this.getRelatedNodes.bind(this);
     }
 
+    private getAuthHeaders(): HttpHeaders {
+        const accessToken = this.auth.accessToken;
+        return new HttpHeaders({
+            'Content-Type': 'application/json; charset=utf-8',
+            'Authorization': `Bearer ${accessToken}`,
+        });
+    }
+
     public queryData<T>(statement: string, parameters: object = {}): Observable<QueryResponse<T>> {
         const body = {
             statement: statement,
             parameters,
         };
-        const headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
+        const headers = this.getAuthHeaders();
         return this._httpClient.post<QueryResponse<T>>(`${this.fcQueryUrl}`, JSON.stringify(body), { headers });
     }
 
