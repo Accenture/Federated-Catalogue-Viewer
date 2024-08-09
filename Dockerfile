@@ -7,7 +7,7 @@ RUN npm install
 COPY . ./
 RUN npm run build
 
-FROM bitnami/openresty:1.25.3-1
+FROM bitnami/openresty:1.25.3-2
 RUN mv /opt/bitnami/openresty/nginx/conf/nginx.conf /opt/bitnami/openresty/nginx/conf/original-nginx.conf
 COPY nginx.conf /opt/bitnami/openresty/nginx/conf/
 COPY nginx-server-block.conf /opt/bitnami/openresty/nginx/conf/server_blocks/
