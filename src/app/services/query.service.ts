@@ -48,7 +48,12 @@ export class QueryService {
         const params = {
             label,
         };
-        const stmt = 'Match (n) Where $label in labels(n)  Return id(n) as id, n as value, labels(n) as labels';
+        const stmt = `
+            MATCH (n)
+            WHERE $label IN labels(n)
+            RETURN id(n) AS id, n AS value, labels(n) AS labels
+            ORDER BY id(n) DESC
+        `;
         return this.queryData(stmt, params);
     }
 
