@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NodeQueryResult, QueryResponse } from '../../types/dtos';
+import { NodeQueryResult } from '../../types/dtos';
 import { QueryService } from '../../services/query.service';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable, forkJoin } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Component({
     selector: 'app-catalog-browser',
@@ -10,31 +10,47 @@ import { map, Observable, forkJoin } from 'rxjs';
     styleUrls: ['./catalog-browser.component.scss'],
 })
 export class CatalogBrowserComponent implements OnInit {
-    data: Record<string, QueryResponse<NodeQueryResult> | undefined> = {};
+    data: Record<string, NodeQueryResult[]> = {};
+    totalCounts: Record<string, number> = {};
     label?: Observable<string>;
     selectedTab = 0;
+    limit = 30;
+    offsets: Record<string, number> = {
+        LegalParticipant: 0,
+        ServiceOffering: 0,
+        Resource: 0,
+    };
 
     constructor(private _queryService: QueryService, private _activatedRoute: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.label = this._activatedRoute.queryParams.pipe(map((params) => params['label']));
-
-        forkJoin({
-            LegalParticipant: this._queryService.allNodes('LegalParticipant'),
-            ServiceOffering: this._queryService.allNodes('ServiceOffering'),
-            Resource: this._queryService.allNodes('Resource'),
-        }).subscribe((results) => {
-            this.data['LegalParticipant'] = results.LegalParticipant;
-            this.data['ServiceOffering'] = results.ServiceOffering;
-            this.data['Resource'] = results.Resource;
-        });
+        this.onTabChange(this.selectedTab);
     }
 
     onTabChange(index: number): void {
         this.selectedTab = index;
+        const tabKey = this.getTabKey();
+
+        if (!this.data[tabKey] || this.data[tabKey].length === 0) {
+            this.loadDataForTab(tabKey);
+        }
     }
 
     getTabKey(): string {
         return ['LegalParticipant', 'ServiceOffering', 'Resource'][this.selectedTab];
+    }
+
+    private loadDataForTab(tabKey: string): void {
+        this._queryService.allNodes(tabKey, this.limit, this.offsets[tabKey]).subscribe((result) => {
+            this.data[tabKey] = (this.data[tabKey] || []).concat(result.items);
+            this.totalCounts[tabKey] = result.totalCount;
+            this.offsets[tabKey] += this.limit;
+        });
+    }
+
+    loadMore(): void {
+        const tabKey = this.getTabKey();
+        this.loadDataForTab(tabKey);
     }
 }

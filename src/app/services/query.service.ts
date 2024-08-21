@@ -44,7 +44,7 @@ export class QueryService {
         return this._httpClient.post<QueryResponse<T>>(`${this.fcQueryUrl}`, JSON.stringify(body), { headers });
     }
 
-    public allNodes(label = 'Resource'): Observable<QueryResponse<NodeQueryResult>> {
+    public allNodes(label = 'Resource', limit = 100, offset = 0): Observable<QueryResponse<NodeQueryResult>> {
         const params = {
             label,
         };
@@ -53,6 +53,8 @@ export class QueryService {
             WHERE $label IN labels(n)
             RETURN id(n) AS id, n AS value, labels(n) AS labels
             ORDER BY id(n) DESC
+            SKIP ${offset}
+            LIMIT ${limit}
         `;
         return this.queryData(stmt, params);
     }
