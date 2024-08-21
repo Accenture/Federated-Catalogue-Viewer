@@ -10,15 +10,21 @@
         <mat-tab-group dynamicHeight [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
             <mat-tab label="Legal Participant">
                 <app-node-table [nodes]="data['LegalParticipant'] || []"></app-node-table>
-                <button mat-button *ngIf="canLoadMore('LegalParticipant')" (click)="loadMore()">Load More</button>
+                <button mat-raised-button color="primary" *ngIf="canLoadMore('LegalParticipant')" (click)="loadMore()">
+                    Load More <mat-icon>expand_more</mat-icon>
+                </button>
             </mat-tab>
             <mat-tab label="Service Offering">
                 <app-node-table [nodes]="data['ServiceOffering'] || []"></app-node-table>
-                <button mat-button *ngIf="canLoadMore('ServiceOffering')" (click)="loadMore()">Load More</button>
+                <button mat-raised-button color="primary" *ngIf="canLoadMore('ServiceOffering')" (click)="loadMore()">
+                    Load More <mat-icon>expand_more</mat-icon>
+                </button>
             </mat-tab>
             <mat-tab label="Resource">
                 <app-node-table [nodes]="data['Resource'] || []"></app-node-table>
-                <button mat-button *ngIf="canLoadMore('Resource')" (click)="loadMore()">Load More</button>
+                <button mat-raised-button color="primary" *ngIf="canLoadMore('Resource')" (click)="loadMore()">
+                    Load More <mat-icon>expand_more</mat-icon>
+                </button>
             </mat-tab>
         </mat-tab-group>
     </mat-card-content>
