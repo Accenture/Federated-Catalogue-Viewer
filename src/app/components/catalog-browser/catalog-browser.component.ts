@@ -58,4 +58,10 @@ export class CatalogBrowserComponent implements OnInit {
         const tabKey = this.getTabKey();
         this.loadDataForTab(tabKey);
     }
+
+    canLoadMore(tabKey: string): boolean {
+        const currentCount = this.data[tabKey]?.length || 0;
+        const totalCount = this.totalCounts[tabKey] || 0;
+        return currentCount < totalCount;
+    }
 }
