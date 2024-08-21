@@ -32,7 +32,7 @@
     <mat-card style="margin-top: 16px">
         <mat-card-header>
             <mat-card-title>Results</mat-card-title>
-            <mat-card-subtitle>Total Count: {{ data.totalCount }}</mat-card-subtitle>
+            <mat-card-subtitle>Total Count: {{ data.totalCount + 1 }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
             <table mat-table [dataSource]="data.items" *ngIf="data.items.length > 0">
