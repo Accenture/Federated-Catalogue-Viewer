@@ -4,7 +4,9 @@
             {{ '"' + (label | async) + '" Entries' }}
         </mat-card-title>
         <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
-        <mat-card-subtitle>Total: {{ totalCounts[getTabKey()] || 0 }}</mat-card-subtitle>
+        <mat-card-subtitle>
+            Showing {{ getLoadedCount(getTabKey()) }} of {{ totalCounts[getTabKey()] || 0 }} total
+        </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <mat-tab-group dynamicHeight [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
