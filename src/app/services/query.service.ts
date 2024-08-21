@@ -10,6 +10,8 @@ declare global {
     }
 }
 
+const FC_QUERY_PARAMS = '?withTotalCount=false';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,7 +19,8 @@ export class QueryService {
     public readonly fcQueryUrl: string;
 
     constructor(private _httpClient: HttpClient, private auth: AuthService) {
-        this.fcQueryUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
+        const baseUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
+        this.fcQueryUrl = baseUrl + FC_QUERY_PARAMS;
         this.queryData = this.queryData.bind(this);
         this.allNodes = this.allNodes.bind(this);
         this.getById = this.getById.bind(this);
