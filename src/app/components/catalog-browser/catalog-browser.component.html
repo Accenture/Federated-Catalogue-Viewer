@@ -4,9 +4,17 @@
             {{ '"' + (label | async) + '" Entries' }}
         </mat-card-title>
         <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
-        <mat-card-subtitle>
-            Showing {{ getLoadedCount(getTabKey()) }} of {{ totalCounts[getTabKey()] || 0 }} total
-        </mat-card-subtitle>
+        <div class="header-row">
+            <mat-form-field class="page-size-select">
+                <mat-label>Items per page</mat-label>
+                <mat-select [(value)]="limit" (selectionChange)="onPageSizeChange()">
+                    <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-card-subtitle>
+                Showing {{ getLoadedCount(getTabKey()) }} of {{ totalCounts[getTabKey()] || 0 }} total
+            </mat-card-subtitle>
+        </div>
     </mat-card-header>
     <mat-card-content>
         <mat-tab-group dynamicHeight [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">

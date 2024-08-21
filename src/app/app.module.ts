@@ -19,6 +19,7 @@ import { NodeTableComponent } from './components/node-table/node-table.component
 import { MatChipsModule } from '@angular/material/chips';
 import { NodeDetailsComponent } from './components/node-details/node-details.component';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { NodeLabelsComponent } from './components/node-labels/node-labels.component';
 import { AuthenticationComponent } from './components/authentication/authentication.component';
 import { MatMenuModule } from '@angular/material/menu';
@@ -50,6 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatTabsModule,
         MatChipsModule,
         MatListModule,
+        MatSelectModule,
         FormsModule,
         MatMenuModule,
         MatIconModule,

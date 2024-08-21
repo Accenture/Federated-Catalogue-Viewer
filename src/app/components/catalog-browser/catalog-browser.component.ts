@@ -15,6 +15,7 @@ export class CatalogBrowserComponent implements OnInit {
     label?: Observable<string>;
     selectedTab = 0;
     limit = 30;
+    pageSizes = [30, 50, 100, 200];
     offsets: Record<string, number> = {
         LegalParticipant: 0,
         ServiceOffering: 0,
@@ -67,5 +68,11 @@ export class CatalogBrowserComponent implements OnInit {
 
     getLoadedCount(tabKey: string): number {
         return this.data[tabKey]?.length || 0;
+    }
+
+    onPageSizeChange(): void {
+        this.offsets[this.getTabKey()] = 0;
+        this.data[this.getTabKey()] = [];
+        this.loadDataForTab(this.getTabKey());
     }
 }
