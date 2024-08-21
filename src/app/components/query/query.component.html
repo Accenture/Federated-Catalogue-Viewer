@@ -7,7 +7,14 @@
         <mat-card-content>
             <mat-form-field style="width: 100%" appearance="outline">
                 <mat-label>Cypher Query Statement</mat-label>
-                <textarea matInput formControlName="query" style="font-family: monospace"></textarea>
+                <textarea
+                    matInput
+                    formControlName="query"
+                    style="font-family: monospace"
+                    cdkTextareaAutosize
+                    cdkAutosizeMinRows="2"
+                    cdkAutosizeMaxRows="25"
+                ></textarea>
             </mat-form-field>
             <button mat-flat-button color="primary" type="submit">Execute Query</button>
         </mat-card-content>
