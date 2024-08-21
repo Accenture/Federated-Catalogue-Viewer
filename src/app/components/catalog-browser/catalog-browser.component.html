@@ -1,12 +1,22 @@
 <mat-card *ngIf="data">
     <mat-card-header>
-        <mat-card-title *ngIf="label && (label | async); else noLabel">{{
-            '"' + (label | async) + '" Entries'
-        }}</mat-card-title>
+        <mat-card-title *ngIf="label && (label | async); else noLabel">
+            {{ '"' + (label | async) + '" Entries' }}
+        </mat-card-title>
         <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
-        <mat-card-subtitle>Total: {{ data.totalCount }}</mat-card-subtitle>
+        <mat-card-subtitle>Total: {{ data[getTabKey()]?.totalCount || 0 }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-        <app-node-table [nodes]="data.items"></app-node-table>
+        <mat-tab-group [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
+            <mat-tab label="LegalParticipant">
+                <app-node-table [nodes]="data['LegalParticipant']?.items || []"></app-node-table>
+            </mat-tab>
+            <mat-tab label="ServiceOffering">
+                <app-node-table [nodes]="data['ServiceOffering']?.items || []"></app-node-table>
+            </mat-tab>
+            <mat-tab label="Resource">
+                <app-node-table [nodes]="data['Resource']?.items || []"></app-node-table>
+            </mat-tab>
+        </mat-tab-group>
     </mat-card-content>
 </mat-card>
