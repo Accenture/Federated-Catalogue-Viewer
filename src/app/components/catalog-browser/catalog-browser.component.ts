@@ -32,6 +32,12 @@ export class CatalogBrowserComponent implements OnInit {
         this.selectedTab = index;
         const tabKey = this.getTabKey();
 
+        if (!this.totalCounts[tabKey]) {
+            this._queryService.getTotalCount(tabKey).subscribe((totalCount) => {
+                this.totalCounts[tabKey] = totalCount;
+            });
+        }
+
         if (!this.data[tabKey] || this.data[tabKey].length === 0) {
             this.loadDataForTab(tabKey);
         }
@@ -44,7 +50,6 @@ export class CatalogBrowserComponent implements OnInit {
     private loadDataForTab(tabKey: string): void {
         this._queryService.allNodes(tabKey, this.limit, this.offsets[tabKey]).subscribe((result) => {
             this.data[tabKey] = (this.data[tabKey] || []).concat(result.items);
-            this.totalCounts[tabKey] = result.totalCount;
             this.offsets[tabKey] += this.limit;
         });
     }

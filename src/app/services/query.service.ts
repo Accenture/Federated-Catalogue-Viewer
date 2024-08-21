@@ -59,6 +59,18 @@ export class QueryService {
         return this.queryData(stmt, params);
     }
 
+    public getTotalCount(label: string): Observable<number> {
+        const params = {
+            label,
+        };
+        const stmt = `
+            MATCH (n)
+            WHERE $label IN labels(n)
+            RETURN count(n) as totalCount
+        `;
+        return this.queryData<{ totalCount: number }>(stmt, params).pipe(map((response) => response.totalCount || 0));
+    }
+
     public getById(id: number): Observable<NodeQueryResult> {
         const params = {
             id,
