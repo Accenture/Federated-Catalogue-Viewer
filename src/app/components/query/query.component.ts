@@ -60,4 +60,8 @@ export class QueryComponent implements OnInit {
         }
         return [];
     }
+
+    getTotalItemCount(): number {
+        return this.data.items.length;
+    }
 }
