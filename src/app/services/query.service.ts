@@ -10,6 +10,8 @@ declare global {
     }
 }
 
+const FC_QUERY_PARAMS = '?withTotalCount=false';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,7 +19,8 @@ export class QueryService {
     public readonly fcQueryUrl: string;
 
     constructor(private _httpClient: HttpClient, private auth: AuthService) {
-        this.fcQueryUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
+        const baseUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
+        this.fcQueryUrl = baseUrl + FC_QUERY_PARAMS;
         this.queryData = this.queryData.bind(this);
         this.allNodes = this.allNodes.bind(this);
         this.getById = this.getById.bind(this);
@@ -41,12 +44,31 @@ export class QueryService {
         return this._httpClient.post<QueryResponse<T>>(`${this.fcQueryUrl}`, JSON.stringify(body), { headers });
     }
 
-    public allNodes(label = 'Resource'): Observable<QueryResponse<NodeQueryResult>> {
+    public allNodes(label = 'Resource', limit = 100, offset = 0): Observable<QueryResponse<NodeQueryResult>> {
         const params = {
             label,
         };
-        const stmt = 'Match (n) Where $label in labels(n)  Return id(n) as id, n as value, labels(n) as labels';
+        const stmt = `
+            MATCH (n)
+            WHERE $label IN labels(n)
+            RETURN id(n) AS id, n AS value, labels(n) AS labels
+            ORDER BY id(n) DESC
+            SKIP ${offset}
+            LIMIT ${limit}
+        `;
         return this.queryData(stmt, params);
+    }
+
+    public getTotalCount(label: string): Observable<number> {
+        const params = {
+            label,
+        };
+        const stmt = `
+            MATCH (n)
+            WHERE $label IN labels(n)
+            RETURN count(n) as totalCount
+        `;
+        return this.queryData<{ totalCount: number }>(stmt, params).pipe(map((response) => response.totalCount || 0));
     }
 
     public getById(id: number): Observable<NodeQueryResult> {

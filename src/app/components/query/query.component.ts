@@ -6,7 +6,7 @@ import { EMPTY_RESULTS, NodeQueryResult, QueryResponse } from '../../types/dtos'
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, map, tap } from 'rxjs';
 
-const DEFAULT_QUERY = 'Match (n)-[r]->(m)\nReturn n,r,m';
+const DEFAULT_QUERY = 'Match (n)-[r]->(m)\nReturn n,r,m\nLIMIT 100';
 @Component({
     selector: 'app-query',
     templateUrl: './query.component.html',
@@ -59,5 +59,9 @@ export class QueryComponent implements OnInit {
             return Object.keys(this.data.items[0]);
         }
         return [];
+    }
+
+    getTotalItemCount(): number {
+        return this.data.items.length;
     }
 }
