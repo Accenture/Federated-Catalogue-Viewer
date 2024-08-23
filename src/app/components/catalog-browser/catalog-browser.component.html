@@ -1,41 +1,60 @@
-<mat-card *ngIf="data">
+<mat-card>
     <mat-card-header>
         <mat-card-title *ngIf="label && (label | async); else noLabel">
             {{ '"' + (label | async) + '" Entries' }}
         </mat-card-title>
         <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
-        <div class="header-row">
-            <mat-form-field class="page-size-select">
-                <mat-label>Items per page</mat-label>
-                <mat-select [(value)]="limit" (selectionChange)="onPageSizeChange()">
-                    <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-card-subtitle>
-                Showing {{ getLoadedCount(getTabKey()) }} of {{ totalCounts[getTabKey()] || 0 }} total
-            </mat-card-subtitle>
-        </div>
+        <ng-container *ngIf="data$ | async as data">
+            <div class="header-row">
+                <mat-form-field class="page-size-select">
+                    <mat-label>Items per page</mat-label>
+                    <mat-select [value]="limit$.value" (selectionChange)="onPageSizeChange($event.value)">
+                        <mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-card-subtitle> Showing {{ data.nodes.length }} of {{ data.totalCount }} total </mat-card-subtitle>
+            </div>
+            <mat-card-content>
+                <mat-tab-group
+                    dynamicHeight
+                    [selectedIndex]="selectedTab$.value"
+                    (selectedIndexChange)="onTabChange($event)"
+                >
+                    <mat-tab label="Legal Participant">
+                        <app-node-table [nodes]="data.nodes"></app-node-table>
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            *ngIf="data.nodes.length < data.totalCount"
+                            (click)="loadMore()"
+                        >
+                            Load More <mat-icon>expand_more</mat-icon>
+                        </button>
+                    </mat-tab>
+                    <mat-tab label="Service Offering">
+                        <app-node-table [nodes]="data.nodes"></app-node-table>
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            *ngIf="data.nodes.length < data.totalCount"
+                            (click)="loadMore()"
+                        >
+                            Load More <mat-icon>expand_more</mat-icon>
+                        </button>
+                    </mat-tab>
+                    <mat-tab label="Resource">
+                        <app-node-table [nodes]="data.nodes"></app-node-table>
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            *ngIf="data.nodes.length < data.totalCount"
+                            (click)="loadMore()"
+                        >
+                            Load More <mat-icon>expand_more</mat-icon>
+                        </button>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-card-content>
+        </ng-container>
     </mat-card-header>
-    <mat-card-content>
-        <mat-tab-group dynamicHeight [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
-            <mat-tab label="Legal Participant">
-                <app-node-table [nodes]="data['LegalParticipant'] || []"></app-node-table>
-                <button mat-raised-button color="primary" *ngIf="canLoadMore('LegalParticipant')" (click)="loadMore()">
-                    Load More <mat-icon>expand_more</mat-icon>
-                </button>
-            </mat-tab>
-            <mat-tab label="Service Offering">
-                <app-node-table [nodes]="data['ServiceOffering'] || []"></app-node-table>
-                <button mat-raised-button color="primary" *ngIf="canLoadMore('ServiceOffering')" (click)="loadMore()">
-                    Load More <mat-icon>expand_more</mat-icon>
-                </button>
-            </mat-tab>
-            <mat-tab label="Resource">
-                <app-node-table [nodes]="data['Resource'] || []"></app-node-table>
-                <button mat-raised-button color="primary" *ngIf="canLoadMore('Resource')" (click)="loadMore()">
-                    Load More <mat-icon>expand_more</mat-icon>
-                </button>
-            </mat-tab>
-        </mat-tab-group>
-    </mat-card-content>
 </mat-card>

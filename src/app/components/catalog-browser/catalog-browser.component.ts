@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NodeQueryResult } from '../../types/dtos';
 import { QueryService } from '../../services/query.service';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-catalog-browser',
@@ -10,69 +11,68 @@ import { map, Observable } from 'rxjs';
     styleUrls: ['./catalog-browser.component.scss'],
 })
 export class CatalogBrowserComponent implements OnInit {
-    data: Record<string, NodeQueryResult[]> = {};
-    totalCounts: Record<string, number> = {};
-    label?: Observable<string>;
-    selectedTab = 0;
-    limit = 30;
-    pageSizes = [30, 50, 100, 200];
-    offsets: Record<string, number> = {
-        LegalParticipant: 0,
-        ServiceOffering: 0,
-        Resource: 0,
-    };
+    public readonly data$: Observable<{ totalCount: number; nodes: NodeQueryResult[] }>;
+    public readonly selectedTab$ = new BehaviorSubject<number>(0);
+    public readonly limit$ = new BehaviorSubject<number>(30);
+    public readonly fetchMore$ = new Subject<void>();
 
-    constructor(private _queryService: QueryService, private _activatedRoute: ActivatedRoute) {}
+    constructor(private _queryService: QueryService, private _activatedRoute: ActivatedRoute) {
+        const selectedKey$ = this.selectedTab$.pipe(
+            map((selectedTab) => ['LegalParticipant', 'ServiceOffering', 'Resource'][selectedTab]),
+        );
+
+        const offset$ = combineLatest([this.selectedTab$, this.limit$]).pipe(
+            switchMap(([, limit]) =>
+                this.fetchMore$.pipe(
+                    startWith(void 0),
+                    scan((acc) => acc + limit, -limit),
+                ),
+            ),
+        );
+
+        this.data$ = combineLatest([selectedKey$, this.limit$]).pipe(
+            switchMap(([selectedKey, limit]) =>
+                offset$.pipe(
+                    concatMap((offset) => this.fetchNodesAndCount(selectedKey, limit, offset)),
+                    scan(
+                        (acc, curr) => ({
+                            totalCount: curr.totalCount ?? 0,
+                            nodes: acc.nodes.concat(curr.nodes ?? []),
+                        }),
+                        { totalCount: 0, nodes: [] } as { totalCount: number; nodes: NodeQueryResult[] },
+                    ),
+                ),
+            ),
+        );
+    }
+
+    pageSizes = [30, 50, 100, 200];
+    label?: Observable<string>;
 
     ngOnInit(): void {
         this.label = this._activatedRoute.queryParams.pipe(map((params) => params['label']));
-        this.onTabChange(this.selectedTab);
+    }
+
+    protected fetchNodesAndCount(
+        key: string,
+        limit: number,
+        offset: number,
+    ): Observable<{ totalCount: number; nodes: NodeQueryResult[] }> {
+        return combineLatest([
+            this._queryService.allNodes(key, limit, offset).pipe(map((response) => response.items)),
+            this._queryService.getTotalCount(key),
+        ]).pipe(map(([nodes, totalCount]) => ({ nodes, totalCount })));
+    }
+
+    onPageSizeChange(newSize: number): void {
+        this.limit$.next(newSize);
     }
 
     onTabChange(index: number): void {
-        this.selectedTab = index;
-        const tabKey = this.getTabKey();
-
-        if (!this.totalCounts[tabKey]) {
-            this._queryService.getTotalCount(tabKey).subscribe((totalCount) => {
-                this.totalCounts[tabKey] = totalCount;
-            });
-        }
-
-        if (!this.data[tabKey] || this.data[tabKey].length === 0) {
-            this.loadDataForTab(tabKey);
-        }
-    }
-
-    getTabKey(): string {
-        return ['LegalParticipant', 'ServiceOffering', 'Resource'][this.selectedTab];
-    }
-
-    private loadDataForTab(tabKey: string): void {
-        this._queryService.allNodes(tabKey, this.limit, this.offsets[tabKey]).subscribe((result) => {
-            this.data[tabKey] = (this.data[tabKey] || []).concat(result.items);
-            this.offsets[tabKey] += this.limit;
-        });
+        this.selectedTab$.next(index);
     }
 
     loadMore(): void {
-        const tabKey = this.getTabKey();
-        this.loadDataForTab(tabKey);
-    }
-
-    canLoadMore(tabKey: string): boolean {
-        const currentCount = this.data[tabKey]?.length || 0;
-        const totalCount = this.totalCounts[tabKey] || 0;
-        return currentCount < totalCount;
-    }
-
-    getLoadedCount(tabKey: string): number {
-        return this.data[tabKey]?.length || 0;
-    }
-
-    onPageSizeChange(): void {
-        this.offsets[this.getTabKey()] = 0;
-        this.data[this.getTabKey()] = [];
-        this.loadDataForTab(this.getTabKey());
+        this.fetchMore$.next();
     }
 }
