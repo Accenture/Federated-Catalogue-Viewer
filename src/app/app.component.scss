@@ -5,7 +5,19 @@
     background: #fff;
     img {
         height: 32px;
-        margin-left: 32px;
+        margin: 0 16px;
+        align-self: flex-end;
+    }
+    img.logo-roms {
+        padding-bottom: 0.5rem;
+    }
+
+    img.logo-acn {
+        padding-bottom: 1rem;
+    }
+    .mat-divider-vertical {
+        border-right: #e6e6dc 2px solid;
+        height: calc(100% - 1rem);
     }
     .app-name,
     nav {
@@ -14,13 +26,10 @@
         margin-top: 16px;
     }
     .app-name {
-        margin-left: 16px;
-        padding-left: 16px;
+        margin: 0 16px;
         height: 48px;
         margin-top: 2px;
-
         font-size: 1rem;
-        border-left: #e6e6dc 2px solid;
     }
     nav {
         display: flex;
