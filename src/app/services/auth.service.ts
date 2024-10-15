@@ -32,7 +32,7 @@ export class AuthService {
     constructor(private http: HttpClient) {
         this.fcKeycloakAuthUrl =
             window.ENVIRONMENT?.['FC_KEYCLOAK_AUTH_URL'] ||
-            'https://keycloak.gaiax4roms.hotsprings.io/realms/gaiax4roms/protocol/openid-connect/token';
+            'http://key-server:8080/realms/gaia-x/protocol/openid-connect/token';
         this.fcKeycloakClientScope = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SCOPE'] || 'gaia-x';
         this.fcKeycloakClientId = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_ID'] || 'federated-catalogue';
         this.fcKeycloakClientSecret = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SECRET'] || 'keycloak-secret';

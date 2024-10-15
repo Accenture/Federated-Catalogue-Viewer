@@ -19,7 +19,7 @@ export class QueryService {
     public readonly fcQueryUrl: string;
 
     constructor(private _httpClient: HttpClient, private auth: AuthService) {
-        const baseUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'https://fc.gaiax4roms.hotsprings.io/query';
+        const baseUrl = window.ENVIRONMENT?.['FC_QUERY_URL'] || 'http://localhost:8081/query';
         this.fcQueryUrl = baseUrl + FC_QUERY_PARAMS;
         this.queryData = this.queryData.bind(this);
         this.allNodes = this.allNodes.bind(this);
