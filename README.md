@@ -1,8 +1,12 @@
-# Federated Catalogue Viewer UI
+# Federated Catalogue Viewer
 
-User interface to interact with the [XFSC Federated Catalogue](https://gitlab.eclipse.org/eclipse/xfsc/cat/fc-service).
+User interface to interact with the [XFSC Federated Catalogue](https://gitlab.eclipse.org/eclipse/xfsc/cat/fc-service). Features:
 
-TODO IMAGE UI
+-   Catalog authentication
+-   Dedicated listings of assets: LegalParticipant, ServiceOffering, Resource
+-   Run custom cipher queries & list output
+
+<img src="./preview.png" alt="Federated-Catalogue-Viewer" height="500px">
 
 ## Running the app
 
