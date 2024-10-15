@@ -1,22 +1,17 @@
-<mat-toolbar [className]="'app-toolbar'">
-    <img class="logo-acn" src="assets/Acc_Logo_Black_Purple_RGB.png" alt="Accenture" />
-    <mat-divider vertical></mat-divider>
-    <img class="logo-roms" src="assets/ROMS_Logo_Black_Purple_RGB.png" alt="ROMS" />
-    <mat-divider vertical></mat-divider>
+<mat-toolbar>
     <span class="app-name">XFSC Federated Catalog Viewer</span>
-    <span class="app-spacer"></span>
-    <nav>
-        <a routerLink="" [className]="getActiveClass('/nodes')">Browse Catalog</a>
-        <a routerLink="query" [className]="getActiveClass('/query')"> Query Tool</a>
-        <ng-container *ngIf="isLoggedIn()">
-            <button id="user-menu" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="User: {{ username }}">
-                <mat-icon>account_circle</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="logout()">Logout</button>
-            </mat-menu>
-        </ng-container>
-    </nav>
+    <span class="app-toolbar--spacer"></span>
+
+    <a mat-button routerLink="">Browse Catalog</a>
+    <a mat-button routerLink="query">Query Tool</a>
+    <ng-container *ngIf="isLoggedIn()">
+        <button id="user-menu" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="User: {{ username }}">
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+    </ng-container>
 </mat-toolbar>
 
 <div class="app-content">

@@ -16,6 +16,8 @@ export class CatalogBrowserComponent implements OnInit {
     public readonly limit$ = new BehaviorSubject<number>(30);
     public readonly fetchMore$ = new Subject<void>();
 
+    public readonly tabs = ['Legal Participant', 'Service Offering', 'Resource'];
+
     constructor(private _queryService: QueryService, private _activatedRoute: ActivatedRoute) {
         const selectedKey$ = this.selectedTab$.pipe(
             map((selectedTab) => ['LegalParticipant', 'ServiceOffering', 'Resource'][selectedTab]),
