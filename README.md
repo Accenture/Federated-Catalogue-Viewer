@@ -6,7 +6,7 @@ User interface to interact with the [XFSC Federated Catalogue](https://gitlab.ec
 -   Dedicated listings of assets: LegalParticipant, ServiceOffering, Resource
 -   Run custom cipher queries & list output
 
-<img src="./preview.png" alt="Federated-Catalogue-Viewer" height="500px">
+![Federated-Catalogue-Viewer](./preview.png)
 
 ## Running the app
 
