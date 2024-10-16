@@ -1,0 +1,7 @@
+services:
+    frontend:
+        build:
+            context: .
+        ports:
+            - '4200:8080'
+        env_file: .env
