@@ -11,7 +11,6 @@ import { JsonStringifyPipe } from './util/json-stringify.pipe';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CatalogBrowserComponent } from './components/catalog-browser/catalog-browser.component';
@@ -25,6 +24,7 @@ import { AuthenticationComponent } from './components/authentication/authenticat
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAnchor, MatButtonModule, MatIconButton } from '@angular/material/button';
 
 @NgModule({
     declarations: [
@@ -56,6 +56,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatMenuModule,
         MatIconModule,
         MatTooltipModule,
+        MatAnchor,
+        MatIconButton,
     ],
     providers: [],
     bootstrap: [AppComponent],

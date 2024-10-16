@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-    protected readonly toolbar = toolbar;
     username: string | null = null;
     private usernameSubscription!: Subscription;
 
@@ -28,14 +27,6 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.usernameSubscription.unsubscribe();
     }
-
-    getActiveClass(urlPrefix: string): string[] {
-        if (this.router.url.startsWith(urlPrefix)) {
-            return ['active'];
-        }
-        return [];
-    }
-
     isLoggedIn(): boolean {
         return this.authService.isLoggedIn();
     }
