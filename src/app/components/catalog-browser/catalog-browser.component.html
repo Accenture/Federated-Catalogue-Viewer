@@ -1,9 +1,6 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title *ngIf="label && (label | async); else noLabel">
-            {{ '"' + (label | async) + '" Entries' }}
-        </mat-card-title>
-        <ng-template #noLabel><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
+        <ng-template><mat-card-title>Browse Catalog Contents</mat-card-title></ng-template>
     </mat-card-header>
     <ng-container *ngIf="data$ | async as data">
         <mat-card-content>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, } from '@angular/core';
 import { NodeQueryResult } from '../../types/dtos';
 import { QueryService } from '../../services/query.service';
-import { ActivatedRoute } from '@angular/router';
+
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
     templateUrl: './catalog-browser.component.html',
     styleUrls: ['./catalog-browser.component.scss'],
 })
-export class CatalogBrowserComponent implements OnInit {
+export class CatalogBrowserComponent{
     public readonly data$: Observable<{ totalCount: number; nodes: NodeQueryResult[] }>;
     public readonly selectedTab$ = new BehaviorSubject<number>(0);
     public readonly limit$ = new BehaviorSubject<number>(30);
@@ -18,7 +18,7 @@ export class CatalogBrowserComponent implements OnInit {
 
     public readonly tabs = ['Legal Participant', 'Service Offering', 'Resource'];
 
-    constructor(private _queryService: QueryService, private _activatedRoute: ActivatedRoute) {
+    constructor(private _queryService: QueryService) {
         const selectedKey$ = this.selectedTab$.pipe(
             map((selectedTab) => ['LegalParticipant', 'ServiceOffering', 'Resource'][selectedTab]),
         );
@@ -48,13 +48,6 @@ export class CatalogBrowserComponent implements OnInit {
         );
     }
 
-    pageSizes = [30, 50, 100, 200];
-    label?: Observable<string>;
-
-    ngOnInit(): void {
-        this.label = this._activatedRoute.queryParams.pipe(map((params) => params['label']));
-    }
-
     protected fetchNodesAndCount(
         key: string,
         limit: number,
@@ -64,10 +57,6 @@ export class CatalogBrowserComponent implements OnInit {
             this._queryService.allNodes(key, limit, offset).pipe(map((response) => response.items)),
             this._queryService.getTotalCount(key),
         ]).pipe(map(([nodes, totalCount]) => ({ nodes, totalCount })));
-    }
-
-    onPageSizeChange(newSize: number): void {
-        this.limit$.next(newSize);
     }
 
     onTabChange(index: number): void {

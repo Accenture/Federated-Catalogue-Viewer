@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -10,9 +9,9 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
     username: string | null = null;
-    private usernameSubscription!: Subscription;
+    private usernameSubscription?: Subscription;
 
-    constructor(private router: Router, private authService: AuthService) {}
+    constructor( private authService: AuthService) {}
 
     ngOnInit(): void {
         this.usernameSubscription = this.authService.username$.subscribe((username) => {
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.usernameSubscription.unsubscribe();
+        this.usernameSubscription?.unsubscribe();
     }
     isLoggedIn(): boolean {
         return this.authService.isLoggedIn();
