@@ -11,7 +11,8 @@ User interface to interact with the [XFSC Federated Catalogue](https://gitlab.ec
 ## Running the app
 
 1. Run `cp example.env .env` and adjust the variables to connect to your catalog instance.
-2. Run `docker compose up` to start the app. The UI will be available at `http://localhost:4200/`.
+2. Run `docker compose up` to start the app using a prebuild Docker image. `docker compose up --build` will build and run the application.
+3. The UI will be available at `http://localhost:4200/`.
 
 Make sure to add a read-only user to your catalog configuration first. If `DEMO_USERNAME` and `DEMO_USERNAME` are set in your environment, the catalog frontend will automatically authenticate itself. Be aware that this is a frontend component only -- if set, the credentials will be accessible in the browser.
 
