@@ -2,6 +2,7 @@ services:
     frontend:
         build:
             context: .
+        image: ghcr.io/accenture/federated-catalogue-viewer:latest
         ports:
             - '4200:8080'
         env_file: .env
