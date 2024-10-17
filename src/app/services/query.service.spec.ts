@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { QueryService } from './query.service';
+import {TestingModule} from "../testing.module";
 
 describe('QueryService', () => {
     let service: QueryService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+          imports: [TestingModule]
+        });
         service = TestBed.inject(QueryService);
     });
 
