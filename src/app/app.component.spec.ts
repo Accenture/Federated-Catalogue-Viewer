@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import {TestingModule} from "./testing.module";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {AppModule} from "./app.module";
+import { TestingModule } from './testing.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
     beforeEach(() =>
