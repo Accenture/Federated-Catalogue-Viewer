@@ -5,7 +5,7 @@ rules:
     scope-enum:
         - 2
         - always
-        - []
+        - ['deps']
     # Type enum should be consistent across data science projects
     type-enum:
         - 2
