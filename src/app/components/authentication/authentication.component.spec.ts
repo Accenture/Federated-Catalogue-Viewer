@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthenticationComponent } from './authentication.component';
-import {TestingModule} from "../../testing.module";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {NO_ERRORS_SCHEMA} from "@angular/core";
-import {MatInputModule} from "@angular/material/input";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { TestingModule } from '../../testing.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AuthenticationComponent', () => {
     let component: AuthenticationComponent;
@@ -15,7 +15,7 @@ describe('AuthenticationComponent', () => {
         await TestBed.configureTestingModule({
             imports: [TestingModule, MatFormFieldModule, MatInputModule, BrowserAnimationsModule],
             declarations: [AuthenticationComponent],
-          schemas: [NO_ERRORS_SCHEMA]
+            schemas: [NO_ERRORS_SCHEMA],
         }).compileComponents();
 
         fixture = TestBed.createComponent(AuthenticationComponent);

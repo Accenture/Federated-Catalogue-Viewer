@@ -1,4 +1,4 @@
-import { Component, } from '@angular/core';
+import { Component } from '@angular/core';
 import { NodeQueryResult } from '../../types/dtos';
 import { QueryService } from '../../services/query.service';
 
@@ -10,7 +10,7 @@ import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
     templateUrl: './catalog-browser.component.html',
     styleUrls: ['./catalog-browser.component.scss'],
 })
-export class CatalogBrowserComponent{
+export class CatalogBrowserComponent {
     public readonly data$: Observable<{ totalCount: number; nodes: NodeQueryResult[] }>;
     public readonly selectedTab$ = new BehaviorSubject<number>(0);
     public readonly limit$ = new BehaviorSubject<number>(30);

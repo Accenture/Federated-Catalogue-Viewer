@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NodeTableComponent } from './node-table.component';
-import {TestingModule} from "../../testing.module";
-import {MatTableModule} from "@angular/material/table";
+import { TestingModule } from '../../testing.module';
+import { MatTableModule } from '@angular/material/table';
 
 describe('NodeTableComponent', () => {
     let component: NodeTableComponent;
