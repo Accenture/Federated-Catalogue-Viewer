@@ -1,1 +1,30 @@
-<p>marketplace works!</p>
+<div *ngIf="error">
+    <p>Error occurred: {{ error.message }}</p>
+</div>
+
+<div *ngIf="!error && legalNames.length > 0">
+    <mat-form-field>
+        <mat-label>Select Legal Participant</mat-label>
+        <mat-select [value]="legalName" (selectionChange)="onLegalNameChange($event.value)">
+            <mat-option [value]="null">All Offerings</mat-option>
+            <mat-option *ngFor="let name of legalNames" [value]="name">
+                {{ name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div *ngIf="!error && data.items.length === 0">
+    <p>No results found.</p>
+</div>
+
+<div *ngIf="!error && data.items.length > 0">
+    <h3>Query Results:</h3>
+    <div *ngFor="let item of data.items; let i = index" style="margin-bottom: 20px">
+        <mat-card [ngStyle]="{ 'background-color': i % 2 === 0 ? 'white' : '#f0f0f0' }">
+            <mat-card-content>
+                <pre>{{ item | json }}</pre>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
