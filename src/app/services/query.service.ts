@@ -91,4 +91,16 @@ export class QueryService {
 
         return this.queryData<NodeQueryResult>(stmt, params);
     }
+
+    public buildOfferInfoQuery(offerId: number): string {
+        return `
+MATCH (so)
+WHERE 'ServiceOffering' IN labels(so) AND id(so) = ${offerId}
+CALL apoc.path.subgraphNodes(so, {maxLevel: 7})
+YIELD node AS connected
+RETURN DISTINCT id(connected) AS id, connected AS value, labels(connected) AS labels
+ORDER BY labels(connected), id DESC
+LIMIT 100
+        `.trim();
+    }
 }

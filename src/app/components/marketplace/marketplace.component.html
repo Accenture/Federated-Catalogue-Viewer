@@ -2,29 +2,120 @@
     <p>Error occurred: {{ error.message }}</p>
 </div>
 
-<div *ngIf="!error && legalNames.length > 0">
-    <mat-form-field>
-        <mat-label>Select Legal Participant</mat-label>
-        <mat-select [value]="legalName" (selectionChange)="onLegalNameChange($event.value)">
-            <mat-option [value]="null">All Offerings</mat-option>
-            <mat-option *ngFor="let name of legalNames" [value]="name">
-                {{ name }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</div>
+<div *ngIf="!error">
+    <ng-container *ngIf="legalNames$ | async as legalNames">
+        <mat-form-field class="wide-select" *ngIf="legalNames.length > 0">
+            <mat-label>Select Participant</mat-label>
+            <mat-select [value]="legalName" (selectionChange)="onLegalNameChange($event)">
+                <mat-option [value]="null">All Offerings</mat-option>
+                <mat-option *ngFor="let name of legalNames" [value]="name">
+                    {{ name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
 
-<div *ngIf="!error && data.items.length === 0">
-    <p>No results found.</p>
-</div>
+    <ng-container *ngIf="services$ | async as services">
+        <div *ngIf="services.length === 0">
+            <p>No offers found.</p>
+        </div>
 
-<div *ngIf="!error && data.items.length > 0">
-    <h3>Query Results:</h3>
-    <div *ngFor="let item of data.items; let i = index" style="margin-bottom: 20px">
-        <mat-card [ngStyle]="{ 'background-color': i % 2 === 0 ? 'white' : '#f0f0f0' }">
-            <mat-card-content>
-                <pre>{{ item | json }}</pre>
-            </mat-card-content>
-        </mat-card>
-    </div>
+        <div *ngIf="services.length > 0" class="card-container">
+            <div *ngFor="let service of services; let i = index" class="card-wrapper">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ service.serviceOffering.name }}</mat-card-title>
+                        <mat-card-subtitle class="participant">{{ service.legalParticipant.name }}</mat-card-subtitle>
+                    </mat-card-header>
+
+                    <mat-card-content>
+                        <p class="resource-description">
+                            {{ formatter.formatDescription(service.serviceOffering.description) }}
+                        </p>
+                    </mat-card-content>
+
+                    <mat-card-content>
+                        <mat-divider *ngIf="service.dataResource"></mat-divider>
+                        <div *ngIf="service.dataResource" class="resource">
+                            <p class="resource-title">Data Resource</p>
+                            <p
+                                class="resource-description"
+                                *ngIf="service.dataResource.description && service.dataResource.description.length"
+                            >
+                                {{ formatter.formatDescription(service.dataResource.description) }}
+                            </p>
+                            <p *ngIf="service.dataResource.name">
+                                <span class="label">Name:</span> {{ service.dataResource.name }}
+                            </p>
+                            <p *ngIf="service.dataResource.containsPII">
+                                <span class="label">Contains PII:</span> {{ service.dataResource.containsPII }}
+                            </p>
+                            <p *ngIf="service.dataResource.copyrightOwnedBy">
+                                <span class="label">Copyright Owned By:</span>
+                                {{ service.dataResource.copyrightOwnedBy }}
+                            </p>
+                            <p *ngIf="service.dataResource.license">
+                                <span class="label">License:</span> {{ service.dataResource.license }}
+                            </p>
+                            <p *ngIf="service.dataResource.policy">
+                                <span class="label">Policy:</span> {{ service.dataResource.policy }}
+                            </p>
+                        </div>
+
+                        <mat-divider *ngIf="service.serviceAccessPoint"></mat-divider>
+                        <div *ngIf="service.serviceAccessPoint" class="resource">
+                            <p class="resource-title">Service Access Point</p>
+                            <p *ngIf="service.serviceAccessPoint.host">
+                                <span class="label">Host:</span> {{ service.serviceAccessPoint.host }}
+                            </p>
+                            <p *ngIf="service.serviceAccessPoint.openAPI">
+                                <span class="label">OpenAPI:</span> {{ service.serviceAccessPoint.openAPI }}
+                            </p>
+                            <p *ngIf="service.serviceAccessPoint.port">
+                                <span class="label">Port:</span> {{ service.serviceAccessPoint.port }}
+                            </p>
+                            <p *ngIf="service.serviceAccessPoint.protocol">
+                                <span class="label">Protocol:</span> {{ service.serviceAccessPoint.protocol }}
+                            </p>
+                            <p *ngIf="service.serviceAccessPoint.version">
+                                <span class="label">Version:</span> {{ service.serviceAccessPoint.version }}
+                            </p>
+                        </div>
+
+                        <mat-divider *ngIf="service.physicalResource"></mat-divider>
+                        <div *ngIf="service.physicalResource" class="resource">
+                            <p class="resource-title">Physical Resource</p>
+                            <p
+                                class="resource-description"
+                                *ngIf="
+                                    service.physicalResource.description && service.physicalResource.description.length
+                                "
+                            >
+                                {{ formatter.formatDescription(service.physicalResource.description) }}
+                            </p>
+                            <p *ngIf="service.physicalResource.name">
+                                <span class="label">Name:</span> {{ service.physicalResource.name }}
+                            </p>
+                            <p *ngIf="service.physicalResource.license">
+                                <span class="label">License:</span> {{ service.physicalResource.license }}
+                            </p>
+                            <p *ngIf="service.physicalResource.location">
+                                <span class="label">Location:</span> {{ service.physicalResource.location }}
+                            </p>
+                            <p *ngIf="service.physicalResource.policy && service.physicalResource.policy.length">
+                                <span class="label">Policy:</span>
+                                {{ formatter.formatDescription(service.physicalResource.policy) }}
+                            </p>
+                        </div>
+                    </mat-card-content>
+
+                    <mat-card-actions>
+                        <button mat-button color="primary" (click)="navigateToQuery(service.serviceOffering.id)">
+                            Graph Nodes
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+    </ng-container>
 </div>

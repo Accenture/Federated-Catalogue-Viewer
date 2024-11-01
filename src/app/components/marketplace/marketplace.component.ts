@@ -1,126 +1,68 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Observable, EMPTY, catchError } from 'rxjs';
+import { ServiceCard } from '../../types/dtos';
+import { MarketplaceService } from '../../services/marketplace.service';
+import { DataFormattingService } from '../../services/data-formatting.service';
+import { QueryService } from 'src/app/services/query.service';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
-import { QueryService } from '../../services/query.service';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
-import { QueryResponse, NodeQueryResult } from '../../types/dtos';
-import { EMPTY_RESULTS } from '../../types/dtos';
-import { catchError, forkJoin, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-
-const OFFER_INFO_QUERY = `
-MATCH (so)
-WHERE 'ServiceOffering' IN labels(so)
-  AND ($offer IS NULL OR $offer IN so.name)
-CALL apoc.path.subgraphNodes(so, {maxLevel: 7})
-YIELD node AS connected
-RETURN DISTINCT id(connected) AS id, connected AS value, labels(connected) AS labels
-ORDER BY labels(connected), id DESC
-LIMIT 100
-`;
-
-const GET_OFFER_NAMES_QUERY = `
-MATCH (lp)-[]-(connected)
-WHERE 'LegalParticipant' IN labels(lp) 
-  AND ($participant IS NULL OR $participant IN lp.legalName)
-  AND 'ServiceOffering' IN labels(connected) 
-  AND connected.name IS NOT NULL
-RETURN DISTINCT connected.name AS serviceOfferingName
-ORDER BY serviceOfferingName
-`;
-
-const GET_LEGAL_NAMES_QUERY = `
-MATCH (lp)
-WHERE 'LegalParticipant' IN labels(lp)
-RETURN DISTINCT lp.legalName AS legalName
-`;
 
 @Component({
     selector: 'app-marketplace',
-    standalone: true,
-    imports: [CommonModule, MatGridListModule, MatCardModule, MatSelectModule],
     templateUrl: './marketplace.component.html',
+    standalone: true,
+    imports: [CommonModule, MatCardModule, MatGridListModule, MatSelectModule, MatDividerModule, MatIconModule],
     styleUrls: ['./marketplace.component.scss'],
 })
 export class MarketplaceComponent implements OnInit {
-    data: QueryResponse<NodeQueryResult> = EMPTY_RESULTS;
-    error: HttpErrorResponse | null = null;
+    legalNames$: Observable<string[]> = EMPTY;
+    services$: Observable<ServiceCard[]> = EMPTY;
     legalName: string | null = null;
-    legalNames: string[] = [];
-    serviceOfferingNames: string[] = [];
+    error: HttpErrorResponse | null = null;
 
-    constructor(private _queryService: QueryService) {}
+    constructor(
+        private marketplaceService: MarketplaceService,
+        private router: Router,
+        public formatter: DataFormattingService,
+        private queryService: QueryService,
+    ) {}
 
     ngOnInit(): void {
-        this.fetchLegalNames();
+        this.legalNames$ = this.marketplaceService.fetchLegalNames().pipe(
+            catchError((error: HttpErrorResponse) => {
+                this.error = error;
+                return EMPTY;
+            }),
+        );
+
+        this.services$ = this.marketplaceService.fetchServiceData(null).pipe(
+            catchError((error: HttpErrorResponse) => {
+                this.error = error;
+                return EMPTY;
+            }),
+        );
     }
 
-    fetchLegalNames(): void {
-        this._queryService
-            .queryData<{ legalName: string }>(GET_LEGAL_NAMES_QUERY)
-            .pipe(
-                catchError((err: HttpErrorResponse) => {
-                    this.error = err;
-                    console.error('Error occurred while fetching legal names:', err);
-                    return of({ totalCount: 0, items: [] });
-                }),
-            )
-            .subscribe((result) => {
-                this.legalNames = result.items.map((item) => item.legalName);
-            });
+    navigateToQuery(offerId: number): void {
+        const query = this.queryService.buildOfferInfoQuery(offerId);
+        this.router.navigate(['/query'], {
+            queryParams: { query },
+        });
     }
 
-    fetchData(legalName: string | null): void {
-        this._queryService
-            .queryData<{ serviceOfferingName: string }>(GET_OFFER_NAMES_QUERY, { participant: legalName })
-            .pipe(
-                switchMap((result) => {
-                    this.serviceOfferingNames = result.items.map((item) => item.serviceOfferingName);
-
-                    const offerInfoQueries = this.serviceOfferingNames.map((offer) => {
-                        console.log(`Querying data for offer: ${offer}`);
-
-                        return this._queryService
-                            .queryData<NodeQueryResult>(OFFER_INFO_QUERY, { offer })
-                            .pipe(
-                                catchError((err) => {
-                                    console.error(`Error fetching data for offer "${offer}":`, err);
-                                    return of(EMPTY_RESULTS);
-                                }),
-                            );
-                    });
-
-                    return forkJoin(offerInfoQueries);
-                }),
-                catchError((err: HttpErrorResponse) => {
-                    this.error = err;
-                    console.error('Error occurred during query:', err);
-                    return of([EMPTY_RESULTS]);
-                }),
-            )
-            .subscribe((results) => {
-                this.data = {
-                    totalCount: results.reduce((acc, result) => acc + result.totalCount, 0),
-                    items: [],
-                };
-
-                results.forEach((result, index) => {
-                    const serviceOfferingName = this.serviceOfferingNames[index];
-                    console.log(`Service Offering: ${serviceOfferingName}`);
-
-                    result.items.forEach((item) => {
-                        console.log(item);
-                    });
-
-                    this.data.items.push(...result.items);
-                });
-            });
-    }
-
-    onLegalNameChange(newLegalName: string | null): void {
-        this.legalName = newLegalName;
-        this.fetchData(this.legalName);
+    onLegalNameChange(event: MatSelectChange): void {
+        this.legalName = event.value;
+        this.services$ = this.marketplaceService.fetchServiceData(this.legalName).pipe(
+            catchError((error: HttpErrorResponse) => {
+                this.error = error;
+                return EMPTY;
+            }),
+        );
     }
 }
