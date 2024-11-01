@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, EMPTY, catchError } from 'rxjs';
 import { ServiceCard } from '../../types/dtos';
 import { MarketplaceService } from '../../services/marketplace.service';
@@ -29,19 +29,27 @@ export class MarketplaceComponent implements OnInit {
     constructor(
         private marketplaceService: MarketplaceService,
         private router: Router,
+        private route: ActivatedRoute,
         public formatter: DataFormattingService,
         private queryService: QueryService,
     ) {}
 
     ngOnInit(): void {
+        this.route.queryParams.subscribe((params) => {
+            this.legalName = params['participant'] || null;
+            this.fetchData();
+        });
+
         this.legalNames$ = this.marketplaceService.fetchLegalNames().pipe(
             catchError((error: HttpErrorResponse) => {
                 this.error = error;
                 return EMPTY;
             }),
         );
+    }
 
-        this.services$ = this.marketplaceService.fetchServiceData(null).pipe(
+    fetchData(): void {
+        this.services$ = this.marketplaceService.fetchServiceData(this.legalName).pipe(
             catchError((error: HttpErrorResponse) => {
                 this.error = error;
                 return EMPTY;
@@ -58,11 +66,13 @@ export class MarketplaceComponent implements OnInit {
 
     onLegalNameChange(event: MatSelectChange): void {
         this.legalName = event.value;
-        this.services$ = this.marketplaceService.fetchServiceData(this.legalName).pipe(
-            catchError((error: HttpErrorResponse) => {
-                this.error = error;
-                return EMPTY;
-            }),
-        );
+
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { participant: this.legalName || null },
+            queryParamsHandling: 'merge',
+        });
+
+        this.fetchData();
     }
 }
