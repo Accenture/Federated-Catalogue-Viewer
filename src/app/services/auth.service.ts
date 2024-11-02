@@ -24,6 +24,8 @@ export class AuthService {
     public readonly fcKeycloakClientSecret: string;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
     username$: Observable<string | null> = this.usernameSubject.asObservable();
+    private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isLoggedIn$: Observable<boolean> = this.isLoggedInSubject.asObservable();
     accessToken = '';
     refreshToken = '';
     expiresIn = 0;
@@ -50,6 +52,7 @@ export class AuthService {
             const elapsed = (Date.now() - storedTime) / 1000;
             this.expiresIn = expiresIn - elapsed;
             if (this.expiresIn > 0) {
+                this.isLoggedInSubject.next(true);
                 this.startTokenExpirationTimer();
             } else {
                 this.refreshAccessToken();
@@ -62,17 +65,15 @@ export class AuthService {
             if (demoUsername && demoPassword) {
                 this.login(demoUsername, demoPassword).subscribe((response) => {
                     this.handleTokenResponse(response);
+                    this.isLoggedInSubject.next(true);
                 });
             }
         }
     }
 
-    isLoggedIn(): boolean {
-        return !!this.accessToken;
-    }
-
     login(username: string, password: string): Observable<TokenResponse> {
         this.usernameSubject.next(username);
+
         const body = new URLSearchParams();
         body.set('scope', this.fcKeycloakClientScope);
         body.set('grant_type', 'password');
@@ -85,7 +86,14 @@ export class AuthService {
             'Content-Type': 'application/x-www-form-urlencoded',
         });
 
-        return this.http.post<TokenResponse>(this.fcKeycloakAuthUrl, body.toString(), { headers });
+        return this.http
+            .post<TokenResponse>(this.fcKeycloakAuthUrl, body.toString(), { headers })
+            .pipe(
+                tap((response) => {
+                    this.handleTokenResponse(response);
+                    this.isLoggedInSubject.next(true);
+                }),
+            );
     }
 
     handleTokenResponse(response: TokenResponse): void {
@@ -134,10 +142,6 @@ export class AuthService {
             .subscribe();
     }
 
-    getUsername(): string | null {
-        return this.usernameSubject.value;
-    }
-
     logout(): void {
         this.accessToken = '';
         this.refreshToken = '';
@@ -151,5 +155,6 @@ export class AuthService {
         localStorage.removeItem('tokenStoredTime');
         localStorage.removeItem('username');
         this.usernameSubject.next(null);
+        this.isLoggedInSubject.next(false);
     }
 }
