@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestingModule } from '../../testing.module';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MarketplaceComponent } from './marketplace.component';
 
@@ -8,7 +11,15 @@ describe('MarketplaceComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MarketplaceComponent],
+            imports: [TestingModule, MarketplaceComponent],
+            providers: [
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        queryParams: of({ participant: 'test-participant' }),
+                    },
+                },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(MarketplaceComponent);
