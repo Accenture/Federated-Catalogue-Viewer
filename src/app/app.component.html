@@ -4,7 +4,7 @@
 
     <a mat-button routerLink="">Browse Catalog</a>
     <a mat-button routerLink="query">Query Tool</a>
-    <ng-container *ngIf="isLoggedIn()">
+    <ng-container *ngIf="isLoggedIn">
         <button id="user-menu" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="User: {{ username }}">
             <mat-icon>account_circle</mat-icon>
         </button>
@@ -16,7 +16,7 @@
 
 <div class="app-content">
     <app-authentication></app-authentication>
-    <ng-container *ngIf="isLoggedIn()">
+    <ng-container *ngIf="isLoggedIn">
         <router-outlet></router-outlet>
     </ng-container>
 </div>

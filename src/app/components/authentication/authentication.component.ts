@@ -1,27 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService, TokenResponse } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-authentication',
     templateUrl: './authentication.component.html',
     styleUrls: ['./authentication.component.scss'],
 })
-export class AuthenticationComponent {
+export class AuthenticationComponent implements OnInit, OnDestroy {
     username = '';
     password = '';
+    isLoggedIn = false;
+    private loginStateSubscription?: Subscription;
 
     constructor(private authService: AuthService, private snackBar: MatSnackBar) {}
 
-    isLoggedIn(): boolean {
-        return this.authService.isLoggedIn();
+    ngOnInit(): void {
+        this.loginStateSubscription = this.authService.isLoggedIn$.subscribe((status) => {
+            this.isLoggedIn = status;
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.loginStateSubscription?.unsubscribe();
     }
 
     login(): void {
         this.authService.login(this.username, this.password).subscribe({
-            next: (response: TokenResponse) => {
-                this.authService.handleTokenResponse(response);
-            },
             error: () => {
                 this.showErrorMessage('Wrong username or password.');
             },
