@@ -96,8 +96,20 @@ export class QueryService {
         return `
 MATCH (so)
 WHERE 'ServiceOffering' IN labels(so) AND id(so) = ${offerId}
-CALL apoc.path.subgraphNodes(so, {maxLevel: 7})
-YIELD node AS connected
+WITH so AS serviceOfferingNode
+
+MATCH (directNode)-[]-(serviceOfferingNode)
+WITH serviceOfferingNode, COLLECT(directNode) AS directNodes
+
+MATCH (serviceOfferingNode)<-[*1..2]-(relatedNode)
+
+WITH serviceOfferingNode, directNodes, COLLECT(relatedNode) AS relatedNodes
+UNWIND relatedNodes AS relatedNode
+MATCH (relatedNode)-[*1..2]->(secondLevelNode)
+
+WITH [serviceOfferingNode] + directNodes + relatedNodes + COLLECT(secondLevelNode) AS allNodes
+UNWIND allNodes AS connected
+
 RETURN DISTINCT id(connected) AS id, connected AS value, labels(connected) AS labels
 ORDER BY labels(connected), id DESC
 LIMIT 100
