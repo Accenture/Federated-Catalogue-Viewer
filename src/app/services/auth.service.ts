@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, catchError, of, tap } from 'rxjs';
 
 declare global {
@@ -22,6 +22,10 @@ export class AuthService {
     public readonly fcKeycloakClientScope: string;
     public readonly fcKeycloakClientId: string;
     public readonly fcKeycloakClientSecret: string;
+    private demoUsername: string;
+    private demoPassword: string;
+    private loginRetryCount = 0;
+    private readonly maxLoginRetries = 1;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
     username$: Observable<string | null> = this.usernameSubject.asObservable();
     private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -38,6 +42,8 @@ export class AuthService {
         this.fcKeycloakClientScope = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SCOPE'] || 'gaia-x';
         this.fcKeycloakClientId = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_ID'] || 'federated-catalogue';
         this.fcKeycloakClientSecret = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SECRET'] || 'keycloak-secret';
+        this.demoUsername = window.ENVIRONMENT?.['DEMO_USERNAME'] || 'user';
+        this.demoPassword = window.ENVIRONMENT?.['DEMO_PASSWORD'] || 'password';
         const storedUsername = localStorage.getItem('username');
         const storedToken = localStorage.getItem('accessToken');
         const storedRefreshToken = localStorage.getItem('refreshToken');
@@ -58,16 +64,7 @@ export class AuthService {
                 this.refreshAccessToken();
             }
         } else {
-            // Log in per env variables for demo purposes
-            const demoUsername = window.ENVIRONMENT?.['DEMO_USERNAME'];
-            const demoPassword = window.ENVIRONMENT?.['DEMO_PASSWORD'];
-
-            if (demoUsername && demoPassword) {
-                this.login(demoUsername, demoPassword).subscribe((response) => {
-                    this.handleTokenResponse(response);
-                    this.isLoggedInSubject.next(true);
-                });
-            }
+            this.loginWithDemoCredentials();
         }
     }
 
@@ -94,6 +91,19 @@ export class AuthService {
                     this.isLoggedInSubject.next(true);
                 }),
             );
+    }
+
+    loginWithDemoCredentials(): void {
+        if (this.demoUsername && this.demoPassword) {
+            this.login(this.demoUsername, this.demoPassword).subscribe({
+                next: (response) => {
+                    this.handleTokenResponse(response);
+                },
+                error: () => {
+                    this.logout();
+                },
+            });
+        }
     }
 
     handleTokenResponse(response: TokenResponse): void {
@@ -132,10 +142,11 @@ export class AuthService {
         this.http
             .post<TokenResponse>(this.fcKeycloakAuthUrl, body.toString(), { headers })
             .pipe(
-                tap((response: TokenResponse) => this.handleTokenResponse(response)),
-                catchError((error: HttpErrorResponse) => {
-                    console.error('Failed to refresh token', error);
-                    this.logout();
+                tap((response) => {
+                    this.handleTokenResponse(response);
+                }),
+                catchError(() => {
+                    this.loginWithDemoCredentials();
                     return of(null);
                 }),
             )
