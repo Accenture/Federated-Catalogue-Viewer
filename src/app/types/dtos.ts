@@ -56,9 +56,9 @@ export interface ServiceCard {
     legalParticipant: Resource;
     legalRegistrationNumber: LegalRegistrationNumber;
     serviceOffering: ServiceOffering;
-    serviceAccessPoint?: ServiceAccessPoint;
-    physicalResource?: PhysicalResource;
-    dataResource?: DataResource;
+    serviceAccessPoints?: ServiceAccessPoint[];
+    physicalResources?: PhysicalResource[];
+    dataResources?: DataResource[];
 }
 
 export interface ServiceOfferingNodes {

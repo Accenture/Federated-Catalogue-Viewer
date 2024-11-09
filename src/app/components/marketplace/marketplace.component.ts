@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, EMPTY, catchError } from 'rxjs';
-import { ServiceCard } from '../../types/dtos';
+import { DataResource, PhysicalResource, ServiceAccessPoint, ServiceCard } from '../../types/dtos';
 import { MarketplaceService } from '../../services/marketplace.service';
 import { DataFormattingService } from '../../services/data-formatting.service';
 import { QueryService } from 'src/app/services/query.service';
@@ -25,6 +25,10 @@ export class MarketplaceComponent implements OnInit {
     services$: Observable<ServiceCard[]> = EMPTY;
     legalName: string | null = null;
     error: HttpErrorResponse | null = null;
+
+    dataResourceIndex = 0;
+    serviceAccessPointIndex = 0;
+    physicalResourceIndex = 0;
 
     constructor(
         private marketplaceService: MarketplaceService,
@@ -74,5 +78,33 @@ export class MarketplaceComponent implements OnInit {
         });
 
         this.fetchData();
+    }
+
+    previousDataResource(dataResources: DataResource[]): void {
+        this.dataResourceIndex = this.dataResourceIndex > 0 ? this.dataResourceIndex - 1 : dataResources.length - 1;
+    }
+
+    nextDataResource(dataResources: DataResource[]): void {
+        this.dataResourceIndex = this.dataResourceIndex < dataResources.length - 1 ? this.dataResourceIndex + 1 : 0;
+    }
+
+    previousServiceAccessPoint(serviceAccessPoints: ServiceAccessPoint[]): void {
+        this.serviceAccessPointIndex =
+            this.serviceAccessPointIndex > 0 ? this.serviceAccessPointIndex - 1 : serviceAccessPoints.length - 1;
+    }
+
+    nextServiceAccessPoint(serviceAccessPoints: ServiceAccessPoint[]): void {
+        this.serviceAccessPointIndex =
+            this.serviceAccessPointIndex < serviceAccessPoints.length - 1 ? this.serviceAccessPointIndex + 1 : 0;
+    }
+
+    previousPhysicalResource(physicalResources: PhysicalResource[]): void {
+        this.physicalResourceIndex =
+            this.physicalResourceIndex > 0 ? this.physicalResourceIndex - 1 : physicalResources.length - 1;
+    }
+
+    nextPhysicalResource(physicalResources: PhysicalResource[]): void {
+        this.physicalResourceIndex =
+            this.physicalResourceIndex < physicalResources.length - 1 ? this.physicalResourceIndex + 1 : 0;
     }
 }

@@ -35,78 +35,128 @@
                     </mat-card-content>
 
                     <mat-card-content>
-                        <mat-divider *ngIf="service.dataResource"></mat-divider>
-                        <div *ngIf="service.dataResource" class="resource">
-                            <p class="resource-title">Data Resource</p>
-                            <p
-                                class="resource-description"
-                                *ngIf="service.dataResource.description && service.dataResource.description.length"
-                            >
-                                {{ formatter.formatDescription(service.dataResource.description) }}
-                            </p>
-                            <p *ngIf="service.dataResource.name">
-                                <span class="label">Name:</span> {{ service.dataResource.name }}
-                            </p>
-                            <p *ngIf="service.dataResource.containsPII">
-                                <span class="label">Contains PII:</span> {{ service.dataResource.containsPII }}
-                            </p>
-                            <p *ngIf="service.dataResource.copyrightOwnedBy">
-                                <span class="label">Copyright Owned By:</span>
-                                {{ service.dataResource.copyrightOwnedBy }}
-                            </p>
-                            <p *ngIf="service.dataResource.license">
-                                <span class="label">License:</span> {{ service.dataResource.license }}
-                            </p>
-                            <p *ngIf="service.dataResource.policy">
-                                <span class="label">Policy:</span> {{ service.dataResource.policy }}
-                            </p>
-                        </div>
+                        <ng-container *ngIf="service.dataResources && service.dataResources.length">
+                            <mat-divider></mat-divider>
 
-                        <mat-divider *ngIf="service.serviceAccessPoint"></mat-divider>
-                        <div *ngIf="service.serviceAccessPoint" class="resource">
-                            <p class="resource-title">Service Access Point</p>
-                            <p *ngIf="service.serviceAccessPoint.host">
-                                <span class="label">Host:</span> {{ service.serviceAccessPoint.host }}
-                            </p>
-                            <p *ngIf="service.serviceAccessPoint.openAPI">
-                                <span class="label">OpenAPI:</span> {{ service.serviceAccessPoint.openAPI }}
-                            </p>
-                            <p *ngIf="service.serviceAccessPoint.port">
-                                <span class="label">Port:</span> {{ service.serviceAccessPoint.port }}
-                            </p>
-                            <p *ngIf="service.serviceAccessPoint.protocol">
-                                <span class="label">Protocol:</span> {{ service.serviceAccessPoint.protocol }}
-                            </p>
-                            <p *ngIf="service.serviceAccessPoint.version">
-                                <span class="label">Version:</span> {{ service.serviceAccessPoint.version }}
-                            </p>
-                        </div>
+                            <div class="carousel-controls" *ngIf="service.dataResources.length > 1">
+                                <button mat-mini-fab (click)="previousDataResource(service.dataResources)">
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Data Resource ({{ dataResourceIndex + 1 }} of {{ service.dataResources.length }})
+                                </span>
+                                <button mat-mini-fab (click)="nextDataResource(service.dataResources)">
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
 
-                        <mat-divider *ngIf="service.physicalResource"></mat-divider>
-                        <div *ngIf="service.physicalResource" class="resource">
-                            <p class="resource-title">Physical Resource</p>
-                            <p
-                                class="resource-description"
-                                *ngIf="
-                                    service.physicalResource.description && service.physicalResource.description.length
-                                "
+                            <div class="resource" *ngIf="service.dataResources[dataResourceIndex] as dataResource">
+                                <p class="resource-title">Data Resource</p>
+                                <p
+                                    class="resource-description"
+                                    *ngIf="dataResource.description && dataResource.description.length"
+                                >
+                                    {{ formatter.formatDescription(dataResource.description) }}
+                                </p>
+                                <p *ngIf="dataResource.name">
+                                    <span class="label">Name:</span> {{ dataResource.name }}
+                                </p>
+                                <p *ngIf="dataResource.containsPII">
+                                    <span class="label">Contains PII:</span> {{ dataResource.containsPII }}
+                                </p>
+                                <p *ngIf="dataResource.copyrightOwnedBy">
+                                    <span class="label">Copyright Owned By:</span> {{ dataResource.copyrightOwnedBy }}
+                                </p>
+                                <p *ngIf="dataResource.license">
+                                    <span class="label">License:</span> {{ dataResource.license }}
+                                </p>
+                                <p *ngIf="dataResource.policy">
+                                    <span class="label">Policy:</span> {{ dataResource.policy }}
+                                </p>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="service.serviceAccessPoints && service.serviceAccessPoints.length">
+                            <mat-divider></mat-divider>
+
+                            <div class="carousel-controls" *ngIf="service.serviceAccessPoints.length > 1">
+                                <button mat-mini-fab (click)="previousServiceAccessPoint(service.serviceAccessPoints)">
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Service Access Point ({{ serviceAccessPointIndex + 1 }} of
+                                    {{ service.serviceAccessPoints.length }})
+                                </span>
+                                <button mat-mini-fab (click)="nextServiceAccessPoint(service.serviceAccessPoints)">
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                class="resource"
+                                *ngIf="service.serviceAccessPoints[serviceAccessPointIndex] as serviceAccessPoint"
                             >
-                                {{ formatter.formatDescription(service.physicalResource.description) }}
-                            </p>
-                            <p *ngIf="service.physicalResource.name">
-                                <span class="label">Name:</span> {{ service.physicalResource.name }}
-                            </p>
-                            <p *ngIf="service.physicalResource.license">
-                                <span class="label">License:</span> {{ service.physicalResource.license }}
-                            </p>
-                            <p *ngIf="service.physicalResource.location">
-                                <span class="label">Location:</span> {{ service.physicalResource.location }}
-                            </p>
-                            <p *ngIf="service.physicalResource.policy && service.physicalResource.policy.length">
-                                <span class="label">Policy:</span>
-                                {{ formatter.formatDescription(service.physicalResource.policy) }}
-                            </p>
-                        </div>
+                                <p class="resource-title">Service Access Point</p>
+                                <p *ngIf="serviceAccessPoint.host">
+                                    <span class="label">Host:</span> {{ serviceAccessPoint.host }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.openAPI">
+                                    <span class="label">OpenAPI:</span> {{ serviceAccessPoint.openAPI }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.port">
+                                    <span class="label">Port:</span> {{ serviceAccessPoint.port }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.protocol">
+                                    <span class="label">Protocol:</span> {{ serviceAccessPoint.protocol }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.version">
+                                    <span class="label">Version:</span> {{ serviceAccessPoint.version }}
+                                </p>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="service.physicalResources && service.physicalResources.length">
+                            <mat-divider></mat-divider>
+
+                            <div class="carousel-controls" *ngIf="service.physicalResources.length > 1">
+                                <button mat-mini-fab (click)="previousPhysicalResource(service.physicalResources)">
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Physical Resource ({{ physicalResourceIndex + 1 }} of
+                                    {{ service.physicalResources.length }})
+                                </span>
+                                <button mat-mini-fab (click)="nextPhysicalResource(service.physicalResources)">
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                class="resource"
+                                *ngIf="service.physicalResources[physicalResourceIndex] as physicalResource"
+                            >
+                                <p class="resource-title">Physical Resource</p>
+                                <p
+                                    class="resource-description"
+                                    *ngIf="physicalResource.description && physicalResource.description.length"
+                                >
+                                    {{ formatter.formatDescription(physicalResource.description) }}
+                                </p>
+                                <p *ngIf="physicalResource.name">
+                                    <span class="label">Name:</span> {{ physicalResource.name }}
+                                </p>
+                                <p *ngIf="physicalResource.license">
+                                    <span class="label">License:</span> {{ physicalResource.license }}
+                                </p>
+                                <p *ngIf="physicalResource.location">
+                                    <span class="label">Location:</span> {{ physicalResource.location }}
+                                </p>
+                                <p *ngIf="physicalResource.policy && physicalResource.policy.length">
+                                    <span class="label">Policy:</span>
+                                    {{ formatter.formatDescription(physicalResource.policy) }}
+                                </p>
+                            </div>
+                        </ng-container>
                     </mat-card-content>
 
                     <mat-card-actions>
