@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NodeQueryResult, ServiceCard, Resource } from '../types/dtos';
+import { NodeQueryResult, ServiceCard, Resource, DataResource } from '../types/dtos';
 
 @Injectable({
     providedIn: 'root',
@@ -10,9 +10,9 @@ export class CardDataService {
             legalParticipant: { id: 0, name: 'undefined', description: [] },
             legalRegistrationNumber: { id: 0, description: [], vatID: '', leiCode: '', countryCode: '' },
             serviceOffering: { id: serviceOffering.id, name: serviceOffering.name || '', description: [], policy: [] },
-            serviceAccessPoint: undefined,
-            physicalResource: undefined,
-            dataResource: undefined,
+            serviceAccessPoints: [],
+            physicalResources: [],
+            dataResources: [],
         };
 
         items.forEach((item) => {
@@ -51,7 +51,7 @@ export class CardDataService {
             }
 
             if (item.labels.includes('ServiceAccessPoint') && item.value['host'] && item.value['port']) {
-                serviceCard.serviceAccessPoint = {
+                const serviceAccessPoint = {
                     id: item.id,
                     host: item.value['host'] as string,
                     openAPI: (item.value['openAPI'] as string) || '',
@@ -63,10 +63,11 @@ export class CardDataService {
                     version: (item.value['version'] as string) || '',
                     description: (item.value['description'] as string[]) || [],
                 };
+                serviceCard.serviceAccessPoints?.push(serviceAccessPoint);
             }
 
             if (item.labels.includes('PhysicalResource') && item.value['license'] && item.value['location']) {
-                serviceCard.physicalResource = {
+                const physicalResource = {
                     id: item.id,
                     name: (item.value['name'] as string) || '',
                     description: (item.value['description'] as string[]) || [],
@@ -74,10 +75,11 @@ export class CardDataService {
                     location: (item.value['location'] as string) || '',
                     policy: (item.value['policy'] as string[]) || [],
                 };
+                serviceCard.physicalResources?.push(physicalResource);
             }
 
             if (item.labels.includes('DataResource')) {
-                serviceCard.dataResource = {
+                const dataResource: DataResource = {
                     id: item.id,
                     name: (item.value['name'] as string) || '',
                     description: (item.value['description'] as string[]) || [],
@@ -86,6 +88,7 @@ export class CardDataService {
                     license: (item.value['license'] as string) || '',
                     policy: (item.value['policy'] as string) || '',
                 };
+                serviceCard.dataResources?.push(dataResource);
             }
         });
 
