@@ -29,10 +29,6 @@
     font-weight: 700;
 }
 
-.resource-description {
-    background-color: white;
-}
-
 mat-card-title {
     font-weight: bold;
 }
@@ -65,4 +61,20 @@ mat-divider {
 
 .carousel-counter {
     font-weight: bold;
+}
+
+.resource-description {
+    background-color: white;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.resource-description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.resource-description::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
 }
