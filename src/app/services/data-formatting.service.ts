@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class DataFormattingService {
-    formatDescription(description: string[] | undefined): string {
-        return Array.isArray(description) ? description.join(', ') : '';
+    formatDescription(description: string[]): string {
+        return Array.isArray(description) ? description.join(', ') : description;
     }
 }

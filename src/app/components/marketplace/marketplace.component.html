@@ -29,7 +29,7 @@
                     </mat-card-header>
 
                     <mat-card-content>
-                        <p class="resource-description">
+                        <p *ngIf="service.serviceOffering.description" class="resource-description">
                             {{ formatter.formatDescription(service.serviceOffering.description) }}
                         </p>
                     </mat-card-content>
