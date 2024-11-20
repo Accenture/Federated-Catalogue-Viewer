@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, EMPTY, catchError } from 'rxjs';
-import { DataResource, PhysicalResource, ServiceAccessPoint, ServiceCard } from '../../types/dtos';
+import { ServiceCard } from '../../types/dtos';
 import { MarketplaceService } from '../../services/marketplace.service';
 import { DataFormattingService } from '../../services/data-formatting.service';
 import { QueryService } from 'src/app/services/query.service';
@@ -12,6 +12,18 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
+
+interface CarouselIndexes {
+    dataResourceIndex: number;
+    serviceAccessPointIndex: number;
+    physicalResourceIndex: number;
+}
+
+enum IndexType {
+    DataResource = 'dataResourceIndex',
+    ServiceAccessPoint = 'serviceAccessPointIndex',
+    PhysicalResource = 'physicalResourceIndex',
+}
 
 @Component({
     selector: 'app-marketplace',
@@ -26,9 +38,8 @@ export class MarketplaceComponent implements OnInit {
     legalName: string | null = null;
     error: HttpErrorResponse | null = null;
 
-    dataResourceIndex = 0;
-    serviceAccessPointIndex = 0;
-    physicalResourceIndex = 0;
+    public IndexType = IndexType;
+    public serviceIndexes: Map<number, CarouselIndexes> = new Map<number, CarouselIndexes>();
 
     constructor(
         private marketplaceService: MarketplaceService,
@@ -80,31 +91,26 @@ export class MarketplaceComponent implements OnInit {
         this.fetchData();
     }
 
-    previousDataResource(dataResources: DataResource[]): void {
-        this.dataResourceIndex = this.dataResourceIndex > 0 ? this.dataResourceIndex - 1 : dataResources.length - 1;
+    private getCarouselIndexes(serviceId: number): CarouselIndexes {
+        if (!this.serviceIndexes.has(serviceId)) {
+            this.serviceIndexes.set(serviceId, {
+                dataResourceIndex: 0,
+                serviceAccessPointIndex: 0,
+                physicalResourceIndex: 0,
+            });
+        }
+        return this.serviceIndexes.get(serviceId) as CarouselIndexes;
     }
 
-    nextDataResource(dataResources: DataResource[]): void {
-        this.dataResourceIndex = this.dataResourceIndex < dataResources.length - 1 ? this.dataResourceIndex + 1 : 0;
-    }
+    updateIndex(serviceId: number, indexType: IndexType, resources: unknown[], direction: 'next' | 'previous'): void {
+        const indexes = this.getCarouselIndexes(serviceId);
+        const currentIndex = indexes[indexType];
+        const maxIndex = resources.length - 1;
 
-    previousServiceAccessPoint(serviceAccessPoints: ServiceAccessPoint[]): void {
-        this.serviceAccessPointIndex =
-            this.serviceAccessPointIndex > 0 ? this.serviceAccessPointIndex - 1 : serviceAccessPoints.length - 1;
-    }
-
-    nextServiceAccessPoint(serviceAccessPoints: ServiceAccessPoint[]): void {
-        this.serviceAccessPointIndex =
-            this.serviceAccessPointIndex < serviceAccessPoints.length - 1 ? this.serviceAccessPointIndex + 1 : 0;
-    }
-
-    previousPhysicalResource(physicalResources: PhysicalResource[]): void {
-        this.physicalResourceIndex =
-            this.physicalResourceIndex > 0 ? this.physicalResourceIndex - 1 : physicalResources.length - 1;
-    }
-
-    nextPhysicalResource(physicalResources: PhysicalResource[]): void {
-        this.physicalResourceIndex =
-            this.physicalResourceIndex < physicalResources.length - 1 ? this.physicalResourceIndex + 1 : 0;
+        if (direction === 'next') {
+            indexes[indexType] = currentIndex < maxIndex ? currentIndex + 1 : 0;
+        } else {
+            indexes[indexType] = currentIndex > 0 ? currentIndex - 1 : maxIndex;
+        }
     }
 }
