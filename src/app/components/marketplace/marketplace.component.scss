@@ -13,10 +13,10 @@
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
-}
 
-.resource p {
-    margin: 0;
+    p {
+        margin: 0;
+    }
 }
 
 .participant {
@@ -68,13 +68,13 @@ mat-divider {
     max-height: 300px;
     overflow-y: auto;
     padding-right: 5px;
-}
 
-.resource-description::-webkit-scrollbar {
-    width: 6px;
-}
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
 
-.resource-description::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+    }
 }
