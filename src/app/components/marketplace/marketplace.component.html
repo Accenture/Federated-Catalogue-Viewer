@@ -39,18 +39,42 @@
                             <mat-divider></mat-divider>
 
                             <div class="carousel-controls" *ngIf="service.dataResources.length > 1">
-                                <button mat-mini-fab (click)="previousDataResource(service.dataResources)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.DataResource,
+                                            service.dataResources,
+                                            'previous'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_left</mat-icon>
                                 </button>
                                 <span class="carousel-counter">
-                                    Data Resource ({{ dataResourceIndex + 1 }} of {{ service.dataResources.length }})
+                                    Data Resource ({{ (serviceIndexes.get(service.serviceOffering.id)?.dataResourceIndex ?? 0) + 1 }}
+                                    of {{ service.dataResources.length }})
                                 </span>
-                                <button mat-mini-fab (click)="nextDataResource(service.dataResources)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.DataResource,
+                                            service.dataResources,
+                                            'next'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_right</mat-icon>
                                 </button>
                             </div>
 
-                            <div class="resource" *ngIf="service.dataResources[dataResourceIndex] as dataResource">
+                            <div
+                                class="resource"
+                                *ngIf="service.dataResources[(serviceIndexes.get(service.serviceOffering.id)?.dataResourceIndex ?? 0)] as dataResource"
+                            >
                                 <p class="resource-title">Data Resource</p>
                                 <p
                                     class="resource-description"
@@ -80,21 +104,41 @@
                             <mat-divider></mat-divider>
 
                             <div class="carousel-controls" *ngIf="service.serviceAccessPoints.length > 1">
-                                <button mat-mini-fab (click)="previousServiceAccessPoint(service.serviceAccessPoints)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.ServiceAccessPoint,
+                                            service.serviceAccessPoints,
+                                            'previous'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_left</mat-icon>
                                 </button>
                                 <span class="carousel-counter">
-                                    Service Access Point ({{ serviceAccessPointIndex + 1 }} of
-                                    {{ service.serviceAccessPoints.length }})
+                                    Service Access Point ({{ (serviceIndexes.get(service.serviceOffering.id)?.serviceAccessPointIndex ?? 0) + 1 }}
+                                    of {{ service.serviceAccessPoints.length }})
                                 </span>
-                                <button mat-mini-fab (click)="nextServiceAccessPoint(service.serviceAccessPoints)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.ServiceAccessPoint,
+                                            service.serviceAccessPoints,
+                                            'next'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_right</mat-icon>
                                 </button>
                             </div>
 
                             <div
                                 class="resource"
-                                *ngIf="service.serviceAccessPoints[serviceAccessPointIndex] as serviceAccessPoint"
+                                *ngIf="service.serviceAccessPoints[(serviceIndexes.get(service.serviceOffering.id)?.serviceAccessPointIndex ?? 0)] as serviceAccessPoint"
                             >
                                 <p class="resource-title">Service Access Point</p>
                                 <p *ngIf="serviceAccessPoint.host">
@@ -119,21 +163,41 @@
                             <mat-divider></mat-divider>
 
                             <div class="carousel-controls" *ngIf="service.physicalResources.length > 1">
-                                <button mat-mini-fab (click)="previousPhysicalResource(service.physicalResources)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.PhysicalResource,
+                                            service.physicalResources,
+                                            'previous'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_left</mat-icon>
                                 </button>
                                 <span class="carousel-counter">
-                                    Physical Resource ({{ physicalResourceIndex + 1 }} of
-                                    {{ service.physicalResources.length }})
+                                    Physical Resource ({{ (serviceIndexes.get(service.serviceOffering.id)?.physicalResourceIndex ?? 0) + 1 }}
+                                    of {{ service.physicalResources.length }})
                                 </span>
-                                <button mat-mini-fab (click)="nextPhysicalResource(service.physicalResources)">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.PhysicalResource,
+                                            service.physicalResources,
+                                            'next'
+                                        )
+                                    "
+                                >
                                     <mat-icon>chevron_right</mat-icon>
                                 </button>
                             </div>
 
                             <div
                                 class="resource"
-                                *ngIf="service.physicalResources[physicalResourceIndex] as physicalResource"
+                                *ngIf="service.physicalResources[(serviceIndexes.get(service.serviceOffering.id)?.physicalResourceIndex ?? 0)] as physicalResource"
                             >
                                 <p class="resource-title">Physical Resource</p>
                                 <p
