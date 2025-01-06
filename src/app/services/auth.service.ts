@@ -22,8 +22,8 @@ export class AuthService {
     public readonly fcKeycloakClientScope: string;
     public readonly fcKeycloakClientId: string;
     public readonly fcKeycloakClientSecret: string;
-    private demoUsername: string;
-    private demoPassword: string;
+    private demoUsername: string | undefined;
+    private demoPassword: string | undefined;
     private loginRetryCount = 0;
     private readonly maxLoginRetries = 1;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
@@ -42,8 +42,8 @@ export class AuthService {
         this.fcKeycloakClientScope = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SCOPE'] || 'gaia-x';
         this.fcKeycloakClientId = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_ID'] || 'federated-catalogue';
         this.fcKeycloakClientSecret = window.ENVIRONMENT?.['FC_KEYCLOAK_CLIENT_SECRET'] || 'keycloak-secret';
-        this.demoUsername = window.ENVIRONMENT?.['DEMO_USERNAME'] || 'user';
-        this.demoPassword = window.ENVIRONMENT?.['DEMO_PASSWORD'] || 'password';
+        this.demoUsername = window.ENVIRONMENT?.['DEMO_USERNAME'];
+        this.demoPassword = window.ENVIRONMENT?.['DEMO_PASSWORD'];
         const storedUsername = localStorage.getItem('username');
         const storedToken = localStorage.getItem('accessToken');
         const storedRefreshToken = localStorage.getItem('refreshToken');
@@ -63,8 +63,10 @@ export class AuthService {
             } else {
                 this.refreshAccessToken();
             }
-        } else {
+        } else if (this.demoUsername && this.demoPassword) {
             this.loginWithDemoCredentials();
+        } else {
+            this.logout();
         }
     }
 
