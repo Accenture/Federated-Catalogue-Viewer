@@ -24,8 +24,6 @@ export class AuthService {
     public readonly fcKeycloakClientSecret: string;
     private demoUsername: string | undefined;
     private demoPassword: string | undefined;
-    private loginRetryCount = 0;
-    private readonly maxLoginRetries = 1;
     private usernameSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
     username$: Observable<string | null> = this.usernameSubject.asObservable();
     private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
