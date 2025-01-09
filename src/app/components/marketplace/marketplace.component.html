@@ -1,0 +1,235 @@
+<div *ngIf="error">
+    <p>Error occurred: {{ error.message }}</p>
+</div>
+
+<div *ngIf="!error">
+    <ng-container *ngIf="legalNames$ | async as legalNames">
+        <mat-form-field class="wide-select" *ngIf="legalNames.length > 0">
+            <mat-label>Select Participant</mat-label>
+            <mat-select [value]="legalName" (selectionChange)="onLegalNameChange($event)">
+                <mat-option [value]="null">All Offerings</mat-option>
+                <mat-option *ngFor="let name of legalNames" [value]="name">
+                    {{ name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="services$ | async as services">
+        <div *ngIf="services.length === 0">
+            <p>No offers found.</p>
+        </div>
+
+        <div *ngIf="services.length > 0" class="card-container">
+            <div *ngFor="let service of services; let i = index" class="card-wrapper">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ service.serviceOffering.name }}</mat-card-title>
+                        <mat-card-subtitle class="participant">{{ service.legalParticipant.name }}</mat-card-subtitle>
+                    </mat-card-header>
+
+                    <mat-card-content>
+                        <p *ngIf="service.serviceOffering.description" class="resource-description">
+                            {{ formatter.formatDescription(service.serviceOffering.description) }}
+                        </p>
+                    </mat-card-content>
+
+                    <mat-card-content>
+                        <ng-container *ngIf="service.dataResources && service.dataResources.length">
+                            <mat-divider></mat-divider>
+
+                            <div class="carousel-controls" *ngIf="service.dataResources.length > 1">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.DataResource,
+                                            service.dataResources,
+                                            'previous'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Data Resource ({{ (serviceIndexes.get(service.serviceOffering.id)?.dataResourceIndex ?? 0) + 1 }}
+                                    of {{ service.dataResources.length }})
+                                </span>
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.DataResource,
+                                            service.dataResources,
+                                            'next'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                class="resource"
+                                *ngIf="service.dataResources[(serviceIndexes.get(service.serviceOffering.id)?.dataResourceIndex ?? 0)] as dataResource"
+                            >
+                                <p class="resource-title">Data Resource</p>
+                                <p
+                                    class="resource-description"
+                                    *ngIf="dataResource.description && dataResource.description.length"
+                                >
+                                    {{ formatter.formatDescription(dataResource.description) }}
+                                </p>
+                                <p *ngIf="dataResource.name">
+                                    <span class="label">Name:</span> {{ dataResource.name }}
+                                </p>
+                                <p *ngIf="dataResource.containsPII">
+                                    <span class="label">Contains PII:</span> {{ dataResource.containsPII }}
+                                </p>
+                                <p *ngIf="dataResource.copyrightOwnedBy">
+                                    <span class="label">Copyright Owned By:</span> {{ dataResource.copyrightOwnedBy }}
+                                </p>
+                                <p *ngIf="dataResource.license">
+                                    <span class="label">License:</span> {{ dataResource.license }}
+                                </p>
+                                <p *ngIf="dataResource.policy">
+                                    <span class="label">Policy:</span> {{ dataResource.policy }}
+                                </p>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="service.serviceAccessPoints && service.serviceAccessPoints.length">
+                            <mat-divider></mat-divider>
+
+                            <div class="carousel-controls" *ngIf="service.serviceAccessPoints.length > 1">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.ServiceAccessPoint,
+                                            service.serviceAccessPoints,
+                                            'previous'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Service Access Point ({{ (serviceIndexes.get(service.serviceOffering.id)?.serviceAccessPointIndex ?? 0) + 1 }}
+                                    of {{ service.serviceAccessPoints.length }})
+                                </span>
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.ServiceAccessPoint,
+                                            service.serviceAccessPoints,
+                                            'next'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                class="resource"
+                                *ngIf="service.serviceAccessPoints[(serviceIndexes.get(service.serviceOffering.id)?.serviceAccessPointIndex ?? 0)] as serviceAccessPoint"
+                            >
+                                <p class="resource-title">Service Access Point</p>
+                                <p *ngIf="serviceAccessPoint.host">
+                                    <span class="label">Host:</span> {{ serviceAccessPoint.host }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.openAPI">
+                                    <span class="label">OpenAPI:</span> {{ serviceAccessPoint.openAPI }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.port">
+                                    <span class="label">Port:</span> {{ serviceAccessPoint.port }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.protocol">
+                                    <span class="label">Protocol:</span> {{ serviceAccessPoint.protocol }}
+                                </p>
+                                <p *ngIf="serviceAccessPoint.version">
+                                    <span class="label">Version:</span> {{ serviceAccessPoint.version }}
+                                </p>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="service.physicalResources && service.physicalResources.length">
+                            <mat-divider></mat-divider>
+
+                            <div class="carousel-controls" *ngIf="service.physicalResources.length > 1">
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.PhysicalResource,
+                                            service.physicalResources,
+                                            'previous'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_left</mat-icon>
+                                </button>
+                                <span class="carousel-counter">
+                                    Physical Resource ({{ (serviceIndexes.get(service.serviceOffering.id)?.physicalResourceIndex ?? 0) + 1 }}
+                                    of {{ service.physicalResources.length }})
+                                </span>
+                                <button
+                                    mat-mini-fab
+                                    (click)="
+                                        updateIndex(
+                                            service.serviceOffering.id,
+                                            IndexType.PhysicalResource,
+                                            service.physicalResources,
+                                            'next'
+                                        )
+                                    "
+                                >
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+                            </div>
+
+                            <div
+                                class="resource"
+                                *ngIf="service.physicalResources[(serviceIndexes.get(service.serviceOffering.id)?.physicalResourceIndex ?? 0)] as physicalResource"
+                            >
+                                <p class="resource-title">Physical Resource</p>
+                                <p
+                                    class="resource-description"
+                                    *ngIf="physicalResource.description && physicalResource.description.length"
+                                >
+                                    {{ formatter.formatDescription(physicalResource.description) }}
+                                </p>
+                                <p *ngIf="physicalResource.name">
+                                    <span class="label">Name:</span> {{ physicalResource.name }}
+                                </p>
+                                <p *ngIf="physicalResource.license">
+                                    <span class="label">License:</span> {{ physicalResource.license }}
+                                </p>
+                                <p *ngIf="physicalResource.location">
+                                    <span class="label">Location:</span> {{ physicalResource.location }}
+                                </p>
+                                <p *ngIf="physicalResource.policy && physicalResource.policy.length">
+                                    <span class="label">Policy:</span>
+                                    {{ formatter.formatDescription(physicalResource.policy) }}
+                                </p>
+                            </div>
+                        </ng-container>
+                    </mat-card-content>
+
+                    <mat-card-actions>
+                        <button mat-button color="primary" (click)="navigateToQuery(service.serviceOffering.id)">
+                            Graph Nodes
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+    </ng-container>
+</div>
