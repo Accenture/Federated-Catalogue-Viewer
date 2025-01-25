@@ -18,6 +18,7 @@ repos:
                 - commit
                 - merge-commit
                 - manual
+
     - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
       rev: v9.16.0
       hooks:
@@ -29,19 +30,11 @@ repos:
       rev: v2.1.2
       hooks:
           - id: prettier
-    - repo: https://github.com/pre-commit/mirrors-eslint
-      rev: 'v9.6.0'
+
+    - repo: local
       hooks:
-          - id: eslint
-            args:
-                - '--fix'
-                - '--config'
-                - 'eslint.config.js'
-            additional_dependencies:
-                - eslint@9.6.0
-                - '@eslint/js@9.6.0'
-                - 'typescript-eslint@7.15.0'
-                - 'angular-eslint@18.1.0'
-                - eslint-config-prettier@9.1.0
-            files: \.(ts|html)$
-            types: [file]
+          - id: ng-lint
+            name: ng lint
+            entry: npm run lint
+            language: node
+            pass_filenames: false
