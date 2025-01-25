@@ -8,6 +8,7 @@ import { concatMap, map, tap } from 'rxjs';
 
 const DEFAULT_QUERY = 'Match (n)-[r]->(m)\nReturn n,r,m\nLIMIT 100';
 @Component({
+    standalone: false,
     selector: 'app-query',
     templateUrl: './query.component.html',
     styleUrls: ['./query.component.scss'],

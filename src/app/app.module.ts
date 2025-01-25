@@ -30,7 +30,6 @@ import { MatAnchor, MatButtonModule, MatIconButton } from '@angular/material/but
     declarations: [
         AppComponent,
         QueryComponent,
-        JsonStringifyPipe,
         CatalogBrowserComponent,
         NodeTableComponent,
         NodeDetailsComponent,
@@ -58,6 +57,7 @@ import { MatAnchor, MatButtonModule, MatIconButton } from '@angular/material/but
         MatTooltipModule,
         MatAnchor,
         MatIconButton,
+        JsonStringifyPipe,
     ],
     providers: [],
     bootstrap: [AppComponent],
