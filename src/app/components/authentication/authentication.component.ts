@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'app-authentication',
     templateUrl: './authentication.component.html',
     styleUrls: ['./authentication.component.scss'],

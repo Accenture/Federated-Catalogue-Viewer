@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
 
 @Component({
+    standalone: false,
     selector: 'app-catalog-browser',
     templateUrl: './catalog-browser.component.html',
     styleUrls: ['./catalog-browser.component.scss'],

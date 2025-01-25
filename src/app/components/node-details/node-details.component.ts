@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'app-node-details',
     templateUrl: './node-details.component.html',
     styleUrls: ['./node-details.component.scss'],

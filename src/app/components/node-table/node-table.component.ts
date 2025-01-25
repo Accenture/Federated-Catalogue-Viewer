@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NodeQueryResult } from '../../types/dtos';
 
 @Component({
+    standalone: false,
     selector: 'app-node-table',
     templateUrl: './node-table.component.html',
     styleUrls: ['./node-table.component.scss'],
