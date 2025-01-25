@@ -1,21 +1,23 @@
 name: Linting
+
 on:
     push:
-
-env:
-    PYTHON_VERSION: 3.12
-    NODE_VERSION: 18.12
 
 jobs:
     pre-commit:
         runs-on: ubuntu-latest
+
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-python@v5
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
               with:
-                  python-version: ${{ env.PYTHON_VERSION }}
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NODE_VERSION }}
-            - run: npm ci
-            - uses: pre-commit/action@v3.0.1
+                  node-version: 'lts/*'
+
+            - name: Install Dependencies
+              run: npm ci
+
+            - name: Run Pre-commit Hooks
+              uses: pre-commit/action@v3.0.1
