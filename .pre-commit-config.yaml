@@ -33,8 +33,9 @@ repos:
 
     - repo: local
       hooks:
-          - id: ng-lint
-            name: ng lint
-            entry: npm run lint
-            language: node
-            pass_filenames: false
+          - id: eslint
+            name: eslint
+            entry: npx -y eslint
+            pass_filenames: true
+            language: system
+            files: \.(ts|html)$
