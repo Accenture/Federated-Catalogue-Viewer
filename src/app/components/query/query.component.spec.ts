@@ -1,14 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { QueryComponent } from './query.component';
-import { TestingModule } from '../../testing.module';
-import { of } from 'rxjs';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { of } from 'rxjs';
+import { QueryComponent } from './query.component';
+import { QueryService } from '../../services/query.service';
 
 describe('QueryComponent', () => {
     let component: QueryComponent;
@@ -16,20 +11,19 @@ describe('QueryComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                TestingModule,
-                MatCardModule,
-                MatFormFieldModule,
-                MatInputModule,
-                ReactiveFormsModule,
-                BrowserAnimationsModule,
-            ],
-            declarations: [QueryComponent],
+            imports: [QueryComponent],
             providers: [
+                provideNoopAnimations(),
                 {
                     provide: ActivatedRoute,
                     useValue: {
                         queryParams: of({ query: 'test' }),
+                    },
+                },
+                {
+                    provide: QueryService,
+                    useValue: {
+                        queryData: () => of({ totalCount: 0, items: [] }),
                     },
                 },
             ],

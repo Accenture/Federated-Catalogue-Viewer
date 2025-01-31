@@ -1,16 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { TestingModule } from './testing.module';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { AppModule } from './app.module';
+import { AuthService } from './services/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('AppComponent', () => {
-    beforeEach(() =>
-        TestBed.configureTestingModule({
-            imports: [TestingModule, MatToolbarModule, AppModule],
-            declarations: [AppComponent],
-        }),
-    );
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [AppComponent],
+            providers: [
+                { provide: ActivatedRoute, useValue: {} },
+                { provide: AuthService, useValue: {} },
+            ],
+        }).compileComponents();
+    });
 
     it('should create the app', () => {
         const fixture = TestBed.createComponent(AppComponent);

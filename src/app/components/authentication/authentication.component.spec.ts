@@ -1,11 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of } from 'rxjs';
 import { AuthenticationComponent } from './authentication.component';
-import { TestingModule } from '../../testing.module';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatInputModule } from '@angular/material/input';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthService } from '../../services/auth.service';
 
 describe('AuthenticationComponent', () => {
     let component: AuthenticationComponent;
@@ -13,9 +9,9 @@ describe('AuthenticationComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [TestingModule, MatFormFieldModule, MatInputModule, BrowserAnimationsModule],
-            declarations: [AuthenticationComponent],
-            schemas: [NO_ERRORS_SCHEMA],
+            imports: [AuthenticationComponent],
+
+            providers: [{ provide: AuthService, useValue: { isLoggedIn$: of(true) } }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(AuthenticationComponent);

@@ -1,15 +1,29 @@
 import { Component } from '@angular/core';
-import { NodeQueryResult } from '../../types/dtos';
-import { QueryService } from '../../services/query.service';
-
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, scan, startWith, concatMap } from 'rxjs/operators';
+import { NodeQueryResult } from '../../types/dtos';
+import { QueryService } from '../../services/query.service';
+import { NodeTableComponent } from '../node-table/node-table.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-    standalone: false,
     selector: 'app-catalog-browser',
     templateUrl: './catalog-browser.component.html',
     styleUrls: ['./catalog-browser.component.scss'],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCardModule,
+        MatTabsModule,
+        MatButtonModule,
+        MatIconModule,
+        NodeTableComponent,
+    ],
 })
 export class CatalogBrowserComponent {
     public readonly data$: Observable<{ totalCount: number; nodes: NodeQueryResult[] }>;

@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NodeTableComponent } from './node-table.component';
-import { TestingModule } from '../../testing.module';
-import { MatTableModule } from '@angular/material/table';
 
 describe('NodeTableComponent', () => {
     let component: NodeTableComponent;
@@ -10,8 +8,7 @@ describe('NodeTableComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [TestingModule, MatTableModule],
-            declarations: [NodeTableComponent],
+            imports: [NodeTableComponent],
         });
         fixture = TestBed.createComponent(NodeTableComponent);
         component = fixture.componentInstance;

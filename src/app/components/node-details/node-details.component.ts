@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { map, Observable, switchMap } from 'rxjs';
 import { QueryService } from '../../services/query.service';
 import { NodeQueryResult, QueryResponse } from '../../types/dtos';
-import { ActivatedRoute } from '@angular/router';
-import { map, Observable, switchMap } from 'rxjs';
+import { NodeTableComponent } from '../node-table/node-table.component';
+import { NodeLabelsComponent } from '../node-labels/node-labels.component';
 
 @Component({
-    standalone: false,
     selector: 'app-node-details',
     templateUrl: './node-details.component.html',
     styleUrls: ['./node-details.component.scss'],
+    imports: [CommonModule, RouterModule, MatCardModule, MatListModule, NodeLabelsComponent, NodeTableComponent],
 })
 export class NodeDetailsComponent implements OnInit {
     value?: Observable<NodeQueryResult>;

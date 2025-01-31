@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CatalogBrowserComponent } from './catalog-browser.component';
-import { TestingModule } from '../../testing.module';
-import { MatCardModule } from '@angular/material/card';
+import { QueryService } from '../../services/query.service';
 
 describe('CatalogBrowserComponent', () => {
     let component: CatalogBrowserComponent;
@@ -10,8 +8,8 @@ describe('CatalogBrowserComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [TestingModule, MatCardModule],
-            declarations: [CatalogBrowserComponent],
+            imports: [CatalogBrowserComponent],
+            providers: [{ provide: QueryService, useValue: {} }],
         });
         fixture = TestBed.createComponent(CatalogBrowserComponent);
         component = fixture.componentInstance;

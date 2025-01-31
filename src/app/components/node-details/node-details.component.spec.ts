@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { NodeDetailsComponent } from './node-details.component';
-import { TestingModule } from '../../testing.module';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { NodeDetailsComponent } from './node-details.component';
+import { QueryService } from '../../services/query.service';
 
 describe('NodeDetailsComponent', () => {
     let component: NodeDetailsComponent;
@@ -11,8 +10,7 @@ describe('NodeDetailsComponent', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [TestingModule],
-            declarations: [NodeDetailsComponent],
+            imports: [NodeDetailsComponent],
             providers: [
                 {
                     provide: ActivatedRoute,
@@ -20,6 +18,7 @@ describe('NodeDetailsComponent', () => {
                         params: of({ id: 123 }),
                     },
                 },
+                { provide: QueryService, useValue: {} },
             ],
         });
         fixture = TestBed.createComponent(NodeDetailsComponent);
