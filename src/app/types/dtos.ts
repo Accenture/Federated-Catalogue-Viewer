@@ -3,10 +3,22 @@ export interface QueryResponse<T> {
     items: T[];
 }
 
+export interface Relation {
+    id: number;
+    type: string;
+}
+
+export interface AssetNode {
+    assetId: number;
+    linkedAssetId: number;
+    assetLabel: string;
+}
+
 export interface NodeQueryResult {
     id: number;
     value: Record<string, unknown>;
     labels: string[];
+    relation: Relation;
 }
 
 export const EMPTY_RESULTS: QueryResponse<NodeQueryResult> = {
@@ -18,6 +30,11 @@ export interface Resource {
     id: number;
     name?: string;
     description?: string[];
+    groupIds?: number[];
+}
+
+export interface LegalParticipant extends Resource {
+    name: string;
 }
 
 export interface ServiceOffering extends Resource {
@@ -60,6 +77,14 @@ export interface ServiceCard {
     physicalResources?: PhysicalResource[];
     dataResources?: DataResource[];
 }
+
+export type Asset =
+    | LegalParticipant
+    | LegalRegistrationNumber
+    | ServiceOffering
+    | ServiceAccessPoint
+    | PhysicalResource
+    | DataResource;
 
 export interface ServiceOfferingNodes {
     data: QueryResponse<NodeQueryResult>;

@@ -93,26 +93,37 @@ export class QueryService {
     }
 
     public buildOfferInfoQuery(offerId: number): string {
+        // Returns relevant assets for an offer and its linkage
         return `
 MATCH (so)
 WHERE 'ServiceOffering' IN labels(so) AND id(so) = ${offerId}
 WITH so AS serviceOfferingNode
 
-MATCH (directNode)-[]-(serviceOfferingNode)
-WITH serviceOfferingNode, COLLECT(directNode) AS directNodes
+MATCH (directNode)-[directRelation]-(serviceOfferingNode)
+WITH serviceOfferingNode, 
+     COLLECT(DISTINCT {node: directNode, relation: {type: type(directRelation), id: id(serviceOfferingNode)}}) AS directNodeRelations
 
-MATCH (serviceOfferingNode)<-[*1..2]-(relatedNode)
+MATCH (serviceOfferingNode)<-[relatedRelation*1..2]-(relatedNode)
+WITH serviceOfferingNode, directNodeRelations, 
+     COLLECT(DISTINCT {node: relatedNode, relation: {type: type(relatedRelation[0]), id: id(serviceOfferingNode)}}) AS relatedNodeRelations
 
-WITH serviceOfferingNode, directNodes, COLLECT(relatedNode) AS relatedNodes
-UNWIND relatedNodes AS relatedNode
-MATCH (relatedNode)-[*1..2]->(secondLevelNode)
+UNWIND relatedNodeRelations AS relatedNodeData
+WITH serviceOfferingNode, directNodeRelations, relatedNodeRelations, relatedNodeData.node AS relatedNode
+MATCH (relatedNode)-[secondLevelRelation*1..2]->(secondLevelNode)
+WITH serviceOfferingNode, directNodeRelations, relatedNodeRelations, 
+     COLLECT(DISTINCT {node: secondLevelNode, relation: {type: type(secondLevelRelation[0]), id: id(relatedNode)}}) AS secondLevelRelations
 
-WITH [serviceOfferingNode] + directNodes + relatedNodes + COLLECT(secondLevelNode) AS allNodes
-UNWIND allNodes AS connected
+WITH serviceOfferingNode, 
+     directNodeRelations + relatedNodeRelations + secondLevelRelations AS allRelations
+UNWIND allRelations AS relationData
 
-RETURN DISTINCT id(connected) AS id, connected AS value, labels(connected) AS labels
-ORDER BY labels(connected), id DESC
-LIMIT 100
+RETURN DISTINCT 
+  id(relationData.node) AS id,
+  relationData.node AS value,
+  labels(relationData.node) AS labels,
+  relationData.relation AS relation
+ORDER BY labels(relationData.node), id DESC
+LIMIT 1000
         `.trim();
     }
 }
