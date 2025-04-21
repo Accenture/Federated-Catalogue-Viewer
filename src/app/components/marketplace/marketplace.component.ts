@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, EMPTY, catchError, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, catchError, map, switchMap, tap } from 'rxjs';
 import { Resource, ServiceCard } from '../../types/dtos';
 import { MarketplaceService } from '../../services/marketplace.service';
 import { QueryService } from 'src/app/services/query.service';
@@ -38,6 +38,9 @@ export class MarketplaceComponent implements OnInit {
     legalName: string | null = null;
     error: HttpErrorResponse | null = null;
 
+    private legalNameSubject = new BehaviorSubject<string | null>(null);
+    private legalName$ = this.legalNameSubject.asObservable();
+
     public IndexType = IndexType;
     public serviceIndexes: Map<number, CarouselIndexes> = new Map<number, CarouselIndexes>();
 
@@ -49,10 +52,15 @@ export class MarketplaceComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.route.queryParams.subscribe((params) => {
-            this.legalName = params['participant'] || null;
-            this.fetchData();
-        });
+        this.route.queryParams
+            .pipe(
+                map((params) => params['participant'] || null),
+                tap((participant) => {
+                    this.legalName = participant;
+                    this.legalNameSubject.next(participant);
+                }),
+            )
+            .subscribe();
 
         this.legalNames$ = this.marketplaceService.fetchLegalNames().pipe(
             catchError((error: HttpErrorResponse) => {
@@ -60,18 +68,28 @@ export class MarketplaceComponent implements OnInit {
                 return EMPTY;
             }),
         );
+
+        this.services$ = this.legalName$.pipe(
+            switchMap((name) =>
+                this.marketplaceService.fetchServiceData(name).pipe(
+                    tap((services: ServiceCard[]) =>
+                        services.forEach((s) => this.getCarouselIndexes(s.serviceOffering.id)),
+                    ),
+                    catchError((error: HttpErrorResponse) => {
+                        this.error = error;
+                        return EMPTY;
+                    }),
+                ),
+            ),
+        );
     }
 
-    fetchData(): void {
-        this.services$ = this.marketplaceService.fetchServiceData(this.legalName).pipe(
-            tap((services: ServiceCard[]) => {
-                services.forEach((service) => this.getCarouselIndexes(service.serviceOffering.id));
-            }),
-            catchError((error: HttpErrorResponse) => {
-                this.error = error;
-                return EMPTY;
-            }),
-        );
+    onLegalNameChange(event: MatSelectChange): void {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { participant: event.value || null },
+            queryParamsHandling: 'merge',
+        });
     }
 
     navigateToQuery(offerId: number): void {
@@ -79,18 +97,6 @@ export class MarketplaceComponent implements OnInit {
         this.router.navigate(['/query'], {
             queryParams: { query },
         });
-    }
-
-    onLegalNameChange(event: MatSelectChange): void {
-        this.legalName = event.value;
-
-        this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { participant: this.legalName || null },
-            queryParamsHandling: 'merge',
-        });
-
-        this.fetchData();
     }
 
     private getCarouselIndexes(serviceId: number): CarouselIndexes {
