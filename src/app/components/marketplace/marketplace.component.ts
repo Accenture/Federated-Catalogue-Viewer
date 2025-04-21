@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, EMPTY, catchError, tap } from 'rxjs';
 import { Resource, ServiceCard } from '../../types/dtos';
 import { MarketplaceService } from '../../services/marketplace.service';
-import { DataFormattingService } from '../../services/data-formatting.service';
 import { QueryService } from 'src/app/services/query.service';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
@@ -46,7 +45,6 @@ export class MarketplaceComponent implements OnInit {
         private marketplaceService: MarketplaceService,
         private router: Router,
         private route: ActivatedRoute,
-        public formatter: DataFormattingService,
         private queryService: QueryService,
     ) {}
 

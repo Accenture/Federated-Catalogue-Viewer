@@ -29,9 +29,11 @@
                     </mat-card-header>
 
                     <mat-card-content>
-                        <p *ngIf="service.serviceOffering.description" class="resource-description">
-                            {{ formatter.formatDescription(service.serviceOffering.description) }}
-                        </p>
+                        <ng-container *ngIf="service.serviceOffering.description as description">
+                            <p class="resource-description">
+                                {{ description.join(', ') }}
+                            </p>
+                        </ng-container>
                     </mat-card-content>
 
                     <mat-card-content>
@@ -83,9 +85,12 @@
                             "
                         >
                             <p class="resource-title">Data Resource</p>
-                            <p *ngIf="dataResource.description?.length" class="resource-description">
-                                {{ formatter.formatDescription(dataResource.description!) }}
-                            </p>
+                            <ng-container *ngIf="dataResource.description as description">
+                                <p class="resource-description">
+                                    {{ description.join(', ') }}
+                                </p>
+                            </ng-container>
+
                             <p *ngIf="dataResource.name"><span class="label">Name:</span> {{ dataResource.name }}</p>
                             <p *ngIf="dataResource.containsPII">
                                 <span class="label">Contains PII:</span> {{ dataResource.containsPII }}
@@ -142,9 +147,11 @@
                         >
                             <mat-divider></mat-divider>
                             <p class="resource-title">Physical Resource</p>
-                            <p *ngIf="physicalResource.description?.length" class="resource-description">
-                                {{ formatter.formatDescription(physicalResource.description!) }}
-                            </p>
+                            <ng-container *ngIf="physicalResource.description as description">
+                                <p class="resource-description">
+                                    {{ description.join(', ') }}
+                                </p>
+                            </ng-container>
                             <p *ngIf="physicalResource.name">
                                 <span class="label">Name:</span> {{ physicalResource.name }}
                             </p>
@@ -154,10 +161,12 @@
                             <p *ngIf="physicalResource.location">
                                 <span class="label">Location:</span> {{ physicalResource.location }}
                             </p>
-                            <p *ngIf="physicalResource.policy?.length">
-                                <span class="label">Policy:</span>
-                                {{ formatter.formatDescription(physicalResource.policy) }}
-                            </p>
+                            <ng-container *ngIf="physicalResource.policy as policy">
+                                <p>
+                                    <span class="label">Policy:</span>
+                                    {{ policy.join(', ') }}
+                                </p>
+                            </ng-container>
                         </div>
                     </mat-card-content>
 
