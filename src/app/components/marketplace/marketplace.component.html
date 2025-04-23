@@ -32,7 +32,7 @@
                         <mat-card-content>
                             <ng-container *ngIf="service.serviceOffering.description as description">
                                 <p class="resource-description">
-                                    {{ description.join(', ') }}
+                                    {{ description | formatDescription }}
                                 </p>
                             </ng-container>
                         </mat-card-content>
@@ -88,7 +88,7 @@
                                 <p class="resource-title">Data Resource</p>
                                 <ng-container *ngIf="dataResource.description as description">
                                     <p class="resource-description">
-                                        {{ description.join(', ') }}
+                                        {{ description | formatDescription }}
                                     </p>
                                 </ng-container>
 
@@ -152,7 +152,7 @@
                                 <p class="resource-title">Physical Resource</p>
                                 <ng-container *ngIf="physicalResource.description as description">
                                     <p class="resource-description">
-                                        {{ description.join(', ') }}
+                                        {{ description | formatDescription }}
                                     </p>
                                 </ng-container>
                                 <p *ngIf="physicalResource.name">
@@ -167,7 +167,7 @@
                                 <ng-container *ngIf="physicalResource.policy as policy">
                                     <p>
                                         <span class="label">Policy:</span>
-                                        {{ policy.join(', ') }}
+                                        {{ policy | formatDescription }}
                                     </p>
                                 </ng-container>
                             </div>
