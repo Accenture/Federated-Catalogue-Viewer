@@ -11,6 +11,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormatDescriptionPipe } from 'src/app/util/format-description.pipe';
 
 export interface CarouselIndexes {
     dataResourceIndex: number;
@@ -29,7 +30,15 @@ enum IndexType {
     selector: 'app-marketplace',
     templateUrl: './marketplace.component.html',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatGridListModule, MatSelectModule, MatDividerModule, MatIconModule],
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatGridListModule,
+        MatSelectModule,
+        MatDividerModule,
+        MatIconModule,
+        FormatDescriptionPipe,
+    ],
     styleUrls: ['./marketplace.component.scss'],
 })
 export class MarketplaceComponent implements OnInit {
