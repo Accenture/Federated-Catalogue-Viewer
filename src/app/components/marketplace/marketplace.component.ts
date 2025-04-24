@@ -42,7 +42,7 @@ enum IndexType {
     styleUrls: ['./marketplace.component.scss'],
 })
 export class MarketplaceComponent implements OnInit {
-    legalNames$: Observable<string[]> = EMPTY;
+    legalNames$: Observable<string[]>;
     services$: Observable<ServiceCard[]> = EMPTY;
     legalName: string | null = null;
     error: HttpErrorResponse | null = null;
@@ -58,7 +58,14 @@ export class MarketplaceComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private queryService: QueryService,
-    ) {}
+    ) {
+        this.legalNames$ = this.marketplaceService.fetchLegalNames().pipe(
+            catchError((error: HttpErrorResponse) => {
+                this.error = error;
+                return EMPTY;
+            }),
+        );
+    }
 
     ngOnInit(): void {
         this.route.queryParams
@@ -70,13 +77,6 @@ export class MarketplaceComponent implements OnInit {
                 }),
             )
             .subscribe();
-
-        this.legalNames$ = this.marketplaceService.fetchLegalNames().pipe(
-            catchError((error: HttpErrorResponse) => {
-                this.error = error;
-                return EMPTY;
-            }),
-        );
 
         this.services$ = this.legalName$.pipe(
             switchMap((name) =>
